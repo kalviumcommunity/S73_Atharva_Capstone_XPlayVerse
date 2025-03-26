@@ -8,7 +8,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000
 
 app.get('/', (req,res) => {
     res.send("<h1>Welcome to XPlayVerse!!</h1>")
