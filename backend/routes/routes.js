@@ -29,7 +29,7 @@ router.put("/:username", (req, res) => {
     const { name, email, games, achievements, highScore } = req.body;
     const userIndex = users.findIndex(user => user.username == username);
     if(userIndex == -1){
-        res.status(400).json({ "message" : "User not found!" })
+        return res.status(400).json({ "message" : "User not found!" })
     }
     const updateUser = {
         ...users[userIndex],
@@ -37,7 +37,8 @@ router.put("/:username", (req, res) => {
         email: email || users[userIndex].email,
         games: games || users[userIndex].games,
         achievements: achievements || users[userIndex].achievements,
-        highScore: highScore || users[userIndex].highScore
+        highScore: (highScore !== undefined && highScore !== null) ? highScore : users[userIndex].highScore
+
     };
     users[userIndex] = updateUser;
     res.json(updateUser)
