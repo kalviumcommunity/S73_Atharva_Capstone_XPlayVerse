@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
+import mongoose from "mongoose"
 import router from "./routes/routes.js"
 
 dotenv.config()
@@ -9,6 +10,11 @@ app.use(express.json())
 app.use(cors())
 
 const PORT = process.env.PORT || 3000
+const URL = process.env.URL
+
+mongoose.connect(URL)
+  .then(() => console.log("Database Connected!"))
+  .catch((err) => console.log("Database Connection Error:", err));
 
 app.get('/', (req,res) => {
     res.send("<h1>Welcome to XPlayVerse!!</h1>")
