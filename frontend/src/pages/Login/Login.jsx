@@ -17,16 +17,40 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      console.log('Login submitted:', formData);
+  
+    try {
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Login successful! Welcome back, " + data.user.name);
+        console.log("Login successful:", data);
+        navigate("/");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Try again.");
+    } finally {
       setIsLoading(false);
-      navigate("/")
-    }, 1500);
-
+    }
   };
+  
+  
 
   return (
     <div className="game-login-screen">

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
+    name: '',
     username: '',
     email: '',
     password: '',
@@ -12,15 +15,49 @@ const Signup = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Signup submitted:', formData);
+
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    const payload = {
+      name: formData.name,
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      games: [],
+      achievements: [],
+      highScore: 0,
+    };
+
+    try {
+      const res = await fetch('http://localhost:3000/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Signup successful! Please log in.');
+        navigate('/login');
+      } else {
+        alert(data.message || 'Signup failed');
+      }
+    } catch (err) {
+      alert('Something went wrong!');
+      console.error(err);
+    }
   };
 
   return (
@@ -34,6 +71,19 @@ const Signup = () => {
           </div>
           
           <form onSubmit={handleSubmit} className="game-signup-form">
+            <div className="game-input-group">
+              <label className="game-input-label">NAME</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="game-input"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
             <div className="game-input-group">
               <label className="game-input-label">GAMERTAG</label>
               <input
@@ -92,7 +142,10 @@ const Signup = () => {
           </form>
           
           <div className="game-signup-footer">
-            <p>ALREADY HAVE AN ACCOUNT? <Link to="/login" className="game-footer-link">LOGIN</Link></p>
+            <p>
+              ALREADY HAVE AN ACCOUNT?{' '}
+              <Link to="/login" className="game-footer-link">LOGIN</Link>
+            </p>
           </div>
         </div>
       </div>
