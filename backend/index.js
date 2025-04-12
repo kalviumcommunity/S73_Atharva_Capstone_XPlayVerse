@@ -13,15 +13,23 @@ const PORT = process.env.PORT || 3000
 const URL = process.env.URL
 
 mongoose.connect(URL)
-  .then(() => console.log("Database Connected!"))
-  .catch((err) => console.log("Database Connection Error:", err));
+  .then(() => {
+    console.log("Database Connected!");
+    startServer();
+  })
+  .catch((err) => {
+    console.error("Database Connection Failed:", err.message);
+    process.exit(1);
+  });
 
-app.get('/', (req,res) => {
-    res.send("<h1>Welcome to XPlayVerse!!</h1>")
-})
-
-app.use("/api/users",router);
-
-app.listen(PORT, () => {
-    console.log(`Server running on PORT: ${PORT}`)
-})
+const startServer = () => {
+  app.get('/', (req, res) => {
+    res.send("<h1>Welcome to XPlayVerse!!</h1>");
+  });
+  
+  app.use("/api/users", router);
+  
+  app.listen(PORT, () => {
+    console.log(`Server running on PORT: ${PORT}`);
+  });
+};
