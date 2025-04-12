@@ -34,18 +34,34 @@ router.get('/:username', async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, username, email, games, achievements, highScore } = req.body;
+  const { name, username, email, password,games, achievements, highScore } = req.body;
 
-  if (!name || !username || !email) {
+  if (!name || !username || !email || !password) {
     return res.status(400).json({ message: "Name, username, and email are required!" });
   }
 
   try {
-    const newUser = new User({ name, username, email, games, achievements, highScore });
+    const newUser = new User({ name, username, email, password, games, achievements, highScore });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json({ message: "Error creating user", error: err });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+
+    res.status(200).json({ message: "Login successful", user });
+  } catch (err) {
+    res.status(500).json({ message: "Login error", error: err });
   }
 });
 
