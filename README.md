@@ -63,5 +63,3 @@ XPlayVerse is a social gaming hub where gamers can share high scores, game achie
 ## Render Link 
 https://s73-atharva-capstone-xplayverse.onrender.com/
 
-## Netlify Link
-https://xplayverse-demo.netlify.app/
