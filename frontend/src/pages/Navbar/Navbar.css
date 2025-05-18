@@ -1,0 +1,71 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 10, 10, 0.9);
+  z-index: 1000;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border-bottom: 2px solid transparent;
+  background-clip: padding-box;
+  border-image: linear-gradient(
+    to right,
+    #6c3bff,
+    #a78bfa,
+    #6c3bff
+  );
+  border-image-slice: 1;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 30px rgba(108, 59, 255, 0.1);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(to right, #a78bfa, #6c3bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(108, 59, 255, 0.3);
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  color: #d1c4f9;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.nav-links a:hover {
+  color: white;
+  background: rgba(108, 59, 255, 0.2);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+/* Add this to your global styles */
+body {
+  margin: 0;
+  padding-top: 70px;
+  background-color: #0a0a0a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

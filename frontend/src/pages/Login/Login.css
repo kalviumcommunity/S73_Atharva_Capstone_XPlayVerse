@@ -1,217 +1,77 @@
-html {
-    overflow: hidden;
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #0a0a0a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-  
-  .game-login-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0; 
-    bottom: 0; 
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #0a0a12;
-    background-image: 
-      radial-gradient(circle at 20% 30%, rgba(90, 60, 150, 0.15) 0%, transparent 25%),
-      radial-gradient(circle at 80% 70%, rgba(30, 10, 50, 0.15) 0%, transparent 25%);
-    z-index: 10;
-    overflow: hidden;
-    box-sizing: border-box; 
-    padding: 20px;
-  }
-  
-  .game-login-container {
-    width: 100%;
-    max-width: 500px;
-    position: relative;
-    z-index: 2;
-    box-sizing: border-box;
-  }
-  
-  .game-login-card {
-    background-color: rgba(15, 15, 25, 0.95);
-    border: 1px solid #2a2a4a;
-    border-radius: 8px;
-    padding: 40px;
-    box-shadow: 0 0 30px rgba(90, 60, 150, 0.4);
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-    max-height: 100%;
-  }
-  
-  .game-login-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-    z-index: -1;
-  }
-  
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-  .game-login-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .game-login-header h2 {
-    color: #6c5ce7;
-    font-size: 2.2rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin: 0;
-    text-shadow: 0 0 15px rgba(108, 92, 231, 0.7);
-  }
-  
-  .game-login-divider {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #6c5ce7, transparent);
-    margin: 15px auto;
-    width: 80%;
-  }
-  
-  .game-input-group {
-    margin-bottom: 25px;
-  }
-  
-  .game-input-label {
-    display: block;
-    color: #a5a5c7;
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-  
-  .game-input {
-    width: 100%;
-    padding: 14px 16px;
-    background-color: rgba(20, 20, 40, 0.8);
-    border: 1px solid #3a3a5a;
-    border-radius: 4px;
-    color: #e0e0ff;
-    font-size: 1rem;
-    transition: all 0.3s;
-    box-sizing: border-box;
-  }
-  
-  .game-input:focus {
-    outline: none;
-    border-color: #6c5ce7;
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
-  }
-  
-  .game-input::placeholder {
-    color: #4a4a6a;
-    font-style: italic;
-  }
-  
-  .game-login-button {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%);
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 20px;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box; 
-  }
-  
-  .game-login-button:hover {
-    background: linear-gradient(135deg, #7d6df0 0%, #5a4fdf 100%);
-    box-shadow: 0 0 20px rgba(108, 92, 231, 0.6);
-    transform: translateY(-2px);
-  }
-  
-  .game-login-button:disabled {
-    background: #3a3a5a;
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  .game-loading-spinner {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-  }
-  
-  .game-login-footer {
-    margin-top: 30px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #a5a5c7;
-  }
-  
-  .game-login-footer p {
-    margin-bottom: 10px;
-  }
-  
-  .game-footer-link {
-    color: #6c5ce7;
-    text-decoration: none;
-    transition: color 0.3s;
-    font-weight: bold;
-  }
-  
-  .game-footer-link:hover {
-    color: #8a7bf0;
-    text-decoration: underline;
-  }
-  
-  .game-login-bg-particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    opacity: 0.3;
-  }
-  
-  .game-login-bg-particles::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      radial-gradient(circle at 20% 30%, rgba(108, 92, 231, 0.2) 0%, transparent 20%),
-      radial-gradient(circle at 80% 70%, rgba(108, 92, 231, 0.2) 0%, transparent 20%);
-    animation: float 15s infinite alternate ease-in-out;
-  }
-  
-  @keyframes float {
-    0% { transform: translate(0, 0); }
-    50% { transform: translate(-20px, 20px); }
-    100% { transform: translate(20px, -20px); }
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: #0a0a0a;
+  position: relative;
+  z-index: 1;
+}
+
+.login-form {
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  box-shadow: 0 0 15px #7000ff;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #a78bfa;
+}
+
+.login-form input {
+  margin: 10px 0;
+  padding: 10px;
+  background: #222;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+}
+
+.login-form button {
+  padding: 10px;
+  background: #6c3bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.login-form button:hover {
+  background: #5a2dd6;
+}
+
+.login-form p {
+  text-align: center;
+  margin-top: 10px;
+  color: white;
+}
+
+.login-form a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+
+.login-form a:hover {
+  text-decoration: underline;
+}
