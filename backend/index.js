@@ -2,7 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 import mongoose from "mongoose"
-import router from "./routes/routes.js"
+import userRouter from "./routes/userRoutes.js";
 
 dotenv.config()
 const app = express()
@@ -27,7 +27,7 @@ const startServer = () => {
     res.send("<h1>Welcome to XPlayVerse!!</h1>");
   });
   
-  app.use("/api/users", router);
+  app.use("/api/users", userRouter);
   
   app.listen(PORT, () => {
     console.log(`Server running on PORT: ${PORT}`);

@@ -115,3 +115,70 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #8a7bf0;
 }
+
+.main-content {
+  padding-top: 80px;
+  flex-grow: 1;
+}
+
+body, html, #root {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.app-container {
+  padding-top: 70px; 
+  min-height: 100%;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: scroll; /* Always show scrollbar */
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 2. Ensure everything respects box model */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* 3. Optional: If you’re using flex layouts or wrappers */
+body > div {
+  min-height: 100vh;
+}
+
+/* 4. Scrollbar styling (WebKit) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1c28;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #7e5cff;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}

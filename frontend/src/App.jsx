@@ -1,33 +1,20 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar/Navbar';
-import Home from './pages/Home/Home';
-import Login from './pages/Login/Login';
-import Signup from './pages/Signup/Signup';
-import './App.css';
+import { BrowserRouter , Routes, Route } from 'react-router-dom';
+import Signup from '../src/pages/Signup/Signup';
+import Login from '../src/pages/Login/Login';
+import Homepage from '../src/pages/Home/Home';
+import Leaderboard from './pages/Leaderboard/Leaderboard';
 
-const AppContent = () => {
-  const location = useLocation();
-  const showNavbar = !['/login', '/signup'].includes(location.pathname);
-
+const App = () => {
   return (
-    <div className="app-container">
-      {showNavbar && <Navbar />}
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 };
-
-function App() {
-  return (
-    <Router>
-      <AppContent />
-    </Router>
-  );
-}
 
 export default App;
