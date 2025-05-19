@@ -1,12 +1,9 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../Navbar/Navbar';
 import './Home.css';
 
 const Home = () => {
   return (
     <>
-      <Navbar />
       <div className="home-wrapper">
         <div className="home-container">
           <div className="home-header" style={{ zIndex: 2 }}>

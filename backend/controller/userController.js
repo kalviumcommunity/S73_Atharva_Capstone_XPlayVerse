@@ -2,11 +2,12 @@ import User from "../models/User.js";
 
 export const SIGNUP = async (req, res) => {
     const { name, username, email, password } = req.body;
+    const profilePicture = req.file ? req.file.filename : '';
     if (!name || !username || !email || !password) {
         return res.status(400).json({ message: "Name, username, and email are required!" });
     }
     try {
-        const newUser = new User({ name, username, email, password});
+        const newUser = new User({ name, username, email, password, profilePicture});
         await newUser.save();
         return res.status(201).json(newUser);
     } catch (err) {
@@ -21,7 +22,7 @@ export const LOGIN = async (req, res) => {
         if (!user || user.password !== password) {
         return res.status(401).json({ message: "Invalid username or password" });
         }
-        res.status(200).json({ message: "Login successful", user });
+        res.status(200).json({ message: "Login successful", user, userId: user._id });
     } catch (err) {
         return res.status(500).json({ message: "Error Logging User", error: err });
     }
