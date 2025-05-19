@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -30,7 +30,11 @@ const userSchema = mongoose.Schema({
     highScore: { 
         type: Number, 
         default: 0 
-    }
+    },
+    profilePicture: {
+        type: String,
+        default: '',
+    },
 })
 
 const User = mongoose.model("User", userSchema);

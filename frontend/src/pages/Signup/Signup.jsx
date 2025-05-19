@@ -12,9 +12,14 @@ const Signup = () => {
     password: '',
     confirmPassword: '',
   });
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    setProfilePicture(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -23,8 +28,15 @@ const Signup = () => {
       alert("Passwords do not match");
       return;
     }
+
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => formData.append(key, value));
+    if (profilePicture) formData.append('profilePicture', profilePicture);
+
     try {
-      await axios.post('http://localhost:3000/api/users', form);
+      await axios.post('http://localhost:3000/api/users', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       alert('Signup successful! Now login.');
       navigate('/login');
     } catch (err) {
@@ -49,7 +61,7 @@ const Signup = () => {
           type="text"
           name="username"
           placeholder="Choose your username"
-          value={form.gamertag}
+          value={form.username}
           onChange={handleChange}
           required
         />
@@ -76,6 +88,15 @@ const Signup = () => {
           value={form.confirmPassword}
           onChange={handleChange}
           required
+        />
+        <label htmlFor="profilePicture" className="file-label">
+          Upload Profile Picture
+        </label>
+        <input
+          type="file"
+          name="profilePicture"
+          accept="image/*"
+          onChange={handleFileChange}
         />
         <button type="submit">Begin Journey</button>
         <p>Already have an account? <Link to='/login'>Login</Link></p>

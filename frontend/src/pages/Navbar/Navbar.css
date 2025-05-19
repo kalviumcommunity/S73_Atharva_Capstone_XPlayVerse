@@ -62,10 +62,28 @@
   transform: translateY(-2px);
 }
 
-/* Add this to your global styles */
 body {
   margin: 0;
   padding-top: 70px;
   background-color: #0a0a0a;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav-links button {
+  color: white;
+  background: linear-gradient(to right, #6c3bff, #a78bfa);
+  font-weight: 600;
+  font-size: 16px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(108, 59, 255, 0.2);
+}
+
+.nav-links button:hover {
+  background: linear-gradient(to right, #a78bfa, #6c3bff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(108, 59, 255, 0.4);
 }

@@ -1,0 +1,243 @@
+.feeds-container {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  padding: 20px;
+  color: #e0e0ff;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 100vh;
+  box-sizing: border-box;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+  margin-left: 200px;
+  margin-top: 100px;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.post-creator {
+  position: fixed;
+  top: 100px;
+  right: 25px;
+  width: 350px;
+  background: rgba(20, 20, 40, 0.6);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #3a3a5a;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  margin: 0;
+}
+
+.post-creator h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #e0e0ff;
+  text-align: center;
+}
+
+.post-creator form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.post-creator textarea {
+  width: 100%;
+  min-height: 120px;
+  max-height: 200px;
+  padding: 15px;
+  border-radius: 8px;
+  background: rgba(30, 30, 50, 0.8);
+  border: 1px solid #3a3a5a;
+  color: #e0e0ff;
+  font-size: 16px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.post-creator button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.post-creator button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+}
+
+.posts-feed {
+  flex: 1;
+  margin-right: 420px;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.posts-feed h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #e0e0ff;
+  text-align: center;
+}
+
+.post-card {
+  border: 1px solid #3a3a5a;
+  border-radius: 12px;
+  background: rgba(20, 20, 40, 0.6);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+  border-color: #6c5ce7;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px;
+  position: relative;
+}
+
+.post-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 25px;
+  right: 25px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #6c5ce7, transparent);
+}
+
+.post-content {
+  padding: 25px;
+}
+
+.post-profile-pic {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 2px solid #6c5ce7;
+  object-fit: cover;
+}
+
+.post-username {
+  font-weight: 600;
+  color: #e0e0ff;
+  font-size: 1.2rem;
+}
+
+.post-caption {
+  margin: 20px 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #d0d0ff;
+}
+
+.post-image {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 10px;
+  max-height: 500px;
+  object-fit: cover;
+  border: 1px solid #3a3a5a;
+}
+
+@media (max-width: 900px) {
+  .post-creator {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 30px;
+  }
+
+  .posts-feed {
+    margin-right: 0;
+  }
+
+  .feeds-container {
+    margin-left: 0;
+    margin-top: 60px;
+    max-width: 700px;
+    padding: 15px;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .feeds-container {
+    margin-top: 60px;
+  }
+
+  .post-header {
+    padding: 20px;
+  }
+
+  .post-content {
+    padding: 20px;
+  }
+
+  .post-creator textarea {
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-header {
+    padding: 15px;
+  }
+
+  .post-content {
+    padding: 15px;
+  }
+
+  .post-creator {
+    padding: 20px;
+  }
+
+  .post-caption {
+    font-size: 1rem;
+  }
+
+  .post-profile-pic {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+html, body {
+  height: auto;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
