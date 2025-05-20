@@ -209,4 +209,118 @@
   color: #888;
 }
 
+.profile-posts-section {
+  padding: 30px;
+  background: #0a0a0a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.profile-posts-title {
+  font-size: 22px;
+  color: #a78bfa;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  justify-content: center;
+}
+
+.profile-post-card {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #6b21a8;
+  text-align: left;
+}
+
+.profile-post-title {
+  margin: 0 0 10px;
+  color: #facc15;
+  font-size: 16px;
+}
+
+.profile-post-caption {
+  color: #d0d0ff;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.profile-post-image {
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 8px;
+  max-height: 200px;
+  object-fit: cover;
+  border: 1px solid #3a3a5a;
+}
+
+.profile-no-posts {
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+}
+
+.profile-post-user {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+}
+
+.profile-user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6b21a8;
+  margin-right: 10px;
+}
+
+.profile-username {
+  color: #fcd34d;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.profile-post-user::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 25px;
+  right: 25px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #6c5ce7, transparent);
+}
+
+.profile-post-delete-btn {
+  background: transparent;
+  border: none;
+  color: #ff4757;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0 5px;
+  transition: color 0.3s ease;
+}
+
+.profile-post-delete-btn:hover {
+  color: #ff6b81;
+}
+
+.tile-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6b21a8;
+  margin-right: 10px;
+}
