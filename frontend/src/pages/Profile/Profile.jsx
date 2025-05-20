@@ -61,6 +61,17 @@ const Profile = () => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/posts/${postId}`);
+      setUserPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
+      alert('Post deleted successfully');
+    } catch (err) {
+      console.error('Failed to delete post:', err);
+      alert('Failed to delete post. Please try again.');
+    }
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -100,13 +111,53 @@ const Profile = () => {
           )}
         </div>
       </div>
+      <div className="profile-posts-section">
+        <h2 className="profile-posts-title">Your Posts</h2>
+        {userPosts.length > 0 ? (
+          <div className="profile-posts-grid">
+            {userPosts.map(post => (
+              <div key={post._id} className="profile-post-card">
+                <div className="profile-post-user">
+                  <img
+                    src={`http://localhost:3000/uploads/${post.userId?.profilePicture}`}
+                    alt="profile"
+                    className="profile-user-image"
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
+                  />
+                  <p className="profile-username">@{post.userId?.username || 'Anonymous'}</p>
+                  <button className="profile-post-delete-btn" onClick={() => handleDeletePost(post._id)} title="Delete Post">
+                    ✕
+                  </button>
+                </div>
+                <p className="profile-post-caption">{post.caption}</p>
+                {post.image && (
+                  <img
+                    src={`http://localhost:3000/uploads/${post.image}`}
+                    alt="Post"
+                    className="profile-post-image"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="profile-no-posts">No posts found.</p>
+        )}
+      </div>
       <div className="user-scroller-section">
         <h3>Other Users on the Website</h3>
         <div className="user-scroller">
           {allUsers.map(u => (
             <div key={u._id} className="user-tile">
-              <p className="tile-name">{u.name}</p>
-              <p className="tile-username">@{u.username}</p>
+              <img
+                src={u.profilePicture ? `http://localhost:3000/uploads/${u.profilePicture}` : 'https://via.placeholder.com/40'}
+                alt="profile"
+                className="tile-profile-pic"
+              />
+              <div>
+                <p className="tile-name">{u.name}</p>
+                <p className="tile-username">@{u.username}</p>
+              </div>
             </div>
           ))}
         </div>

@@ -1,0 +1,164 @@
+.squadroom-container {
+  margin-top: 50px;
+  display: flex;
+  height: 92vh;
+  background-color: #0f0f2e;
+  color: #e0e0ff;
+  font-family: 'Segoe UI', sans-serif;
+  justify-content: center;
+}
+
+.sidebar {
+  width: 220px;
+  background: rgba(20, 20, 40, 0.7);
+  border-right: 1px solid #3a3a5a;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-width: 1000px;
+}
+
+.sidebar-heading {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #d0d0ff;
+}
+
+.room-input {
+  width: 100%;
+  padding: 10px;
+  background: rgba(30, 30, 50, 0.8);
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  color: #e0e0ff;
+  margin-bottom: 10px;
+}
+
+.room-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.room-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+}
+
+.room-list {
+  list-style: none;
+  padding: 0;
+}
+
+.room-name {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  text-align: left;
+  color: #e0e0ff;
+  cursor: pointer;
+}
+
+.active-room {
+  background: #4a3fcf;
+  color: white;
+}
+
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 130vh;
+}
+
+.room-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chat-box {
+  flex: 1;
+  background: rgba(20, 20, 40, 0.6);
+  border: 1px solid #3a3a5a;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+}
+
+.author {
+  font-weight: 600;
+  color: #e0e0ff;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-left: 8px;
+}
+
+.message-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.message-input {
+  flex: 1;
+  padding: 10px;
+  background: rgba(30, 30, 50, 0.8);
+  border: 1px solid #3a3a5a;
+  border-radius: 6px;
+  color: #e0e0ff;
+}
+
+.send-button {
+  padding: 10px 20px;
+  background: #6c5ce7;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.send-button:hover {
+  background: #4a3fcf;
+}
+
+.chat-message {
+  margin-bottom: 12px;
+}
+
+.chat-author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
+
+.chat-text {
+  margin-left: 42px;
+  margin-top: 4px;
+}
