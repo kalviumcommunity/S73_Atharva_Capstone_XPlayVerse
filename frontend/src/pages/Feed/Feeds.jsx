@@ -3,6 +3,8 @@ import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
 import './Feeds.css';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Feeds = () => {
   const [posts, setPosts] = useState([]);
   const [caption, setCaption] = useState('');
@@ -13,7 +15,7 @@ const Feeds = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:3000/api/users/${userId}`)
+      axios.get(`${BACKEND_URL}/api/users/${userId}`)
         .then(res => setUser(res.data))
         .catch(err => console.error(err));
     }
@@ -23,7 +25,7 @@ const Feeds = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/posts');
+      const res = await axios.get(`${BACKEND_URL}/api/posts`);
       const sortedPosts = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setPosts(sortedPosts);
     } catch (err) {
@@ -42,7 +44,7 @@ const Feeds = () => {
     if (image) formData.append('image', image);
 
     try {
-      await axios.post('http://localhost:3000/api/posts', formData, {
+      await axios.post(`${BACKEND_URL}/api/posts`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setCaption('');
@@ -81,7 +83,7 @@ const Feeds = () => {
             <div key={post._id} className="post-card">
               <div className="post-header">
                 <img
-                  src={`http://localhost:3000/uploads/${post.userId?.profilePicture}`}
+                  src={`${BACKEND_URL}/uploads/${post.userId?.profilePicture}`}
                   alt="profile"
                   className="post-profile-pic"
                   onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
@@ -92,7 +94,7 @@ const Feeds = () => {
                 <p className="post-caption">{post.caption}</p>
                 {post.image && (
                   <img
-                    src={`http://localhost:3000/uploads/${post.image}`}
+                    src={`${BACKEND_URL}/uploads/${post.image}`}
                     alt="post"
                     className="post-image"
                   />

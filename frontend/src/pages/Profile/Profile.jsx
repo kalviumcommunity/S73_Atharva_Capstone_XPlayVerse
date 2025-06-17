@@ -4,6 +4,8 @@ import '../Profile/Profile.css';
 import Navbar from '../Navbar/Navbar';
 import { useNavigate } from 'react-router-dom';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ name: '', username: '', email: '' });
@@ -17,7 +19,7 @@ const Profile = () => {
   useEffect(() => {
     if (!userId) return;
 
-    axios.get(`http://localhost:3000/api/users/${userId}`)
+    axios.get(`${BACKEND_URL}/api/users/${userId}`)
       .then(res => {
         setUser(res.data);
         setForm({
@@ -28,18 +30,18 @@ const Profile = () => {
       })
       .catch(err => console.error(err));
 
-    axios.get(`http://localhost:3000/api/users`)
+    axios.get(`${BACKEND_URL}/api/users`)
       .then(res => setAllUsers(res.data))
       .catch(err => console.error(err));
 
-    axios.get(`http://localhost:3000/api/posts/user/${userId}`)
+    axios.get(`${BACKEND_URL}/api/posts/user/${userId}`)
       .then(res => setUserPosts(res.data))
       .catch(err => console.error(err));
   }, [userId]);
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}`);
+      await axios.delete(`${BACKEND_URL}/api/users/${userId}`);
       localStorage.removeItem('userId');
       alert('Account deleted');
       navigate('/signup');
@@ -51,7 +53,7 @@ const Profile = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/users/${userId}`, form);
+      const res = await axios.put(`${BACKEND_URL}/api/users/${userId}`, form);
       setUser(res.data);
       alert('Profile updated successfully!');
       setIsEditing(false);
@@ -63,7 +65,7 @@ const Profile = () => {
 
   const handleDeletePost = async (postId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/posts/${postId}`);
+      await axios.delete(`${BACKEND_URL}/api/posts/${postId}`);
       setUserPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
       alert('Post deleted successfully');
     } catch (err) {
@@ -86,7 +88,7 @@ const Profile = () => {
           <h2>User Profile</h2>
           <img src={
               user.profilePicture
-                ? `http://localhost:3000/uploads/${user.profilePicture}`
+                ? `${BACKEND_URL}/uploads/${user.profilePicture}`
                 : 'https://via.placeholder.com/100'
             }
             alt="Profile"
@@ -119,7 +121,7 @@ const Profile = () => {
               <div key={post._id} className="profile-post-card">
                 <div className="profile-post-user">
                   <img
-                    src={`http://localhost:3000/uploads/${post.userId?.profilePicture}`}
+                    src={`${BACKEND_URL}/uploads/${post.userId?.profilePicture}`}
                     alt="profile"
                     className="profile-user-image"
                     onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
@@ -132,7 +134,7 @@ const Profile = () => {
                 <p className="profile-post-caption">{post.caption}</p>
                 {post.image && (
                   <img
-                    src={`http://localhost:3000/uploads/${post.image}`}
+                    src={`${BACKEND_URL}/uploads/${post.image}`}
                     alt="Post"
                     className="profile-post-image"
                   />
@@ -150,7 +152,7 @@ const Profile = () => {
           {allUsers.map(u => (
             <div key={u._id} className="user-tile">
               <img
-                src={u.profilePicture ? `http://localhost:3000/uploads/${u.profilePicture}` : 'https://via.placeholder.com/40'}
+                src={u.profilePicture ? `${BACKEND_URL}/uploads/${u.profilePicture}` : 'https://via.placeholder.com/40'}
                 alt="profile"
                 className="tile-profile-pic"
               />

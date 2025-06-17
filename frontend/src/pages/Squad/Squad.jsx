@@ -4,7 +4,8 @@ import Navbar from '../Navbar/Navbar';
 import axios from 'axios';
 import './Squad.css'
 
-const socket = io('http://localhost:3000');
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const socket = io(`${BACKEND_URL}`);
 
 const SquadRoom = () => {
   const [message, setMessage] = useState('');
@@ -18,14 +19,14 @@ const SquadRoom = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:3000/api/users/${userId}`)
+      axios.get(`${BACKEND_URL}/api/users/${userId}`)
         .then(res => setUser(res.data))
         .catch(err => console.error(err));
     }
   }, [userId]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/rooms')
+    axios.get(`${BACKEND_URL}/api/rooms`)
       .then(res => {
         setRooms(res.data);
         if (res.data.length > 0 && !room) {
@@ -78,7 +79,7 @@ const SquadRoom = () => {
     if (!newRoomName.trim()) return;
 
     try {
-      const res = await axios.post('http://localhost:3000/api/rooms', { name: newRoomName.trim() });
+      const res = await axios.post(`${BACKEND_URL}/api/rooms`, { name: newRoomName.trim() });
       setRooms(prev => [...prev, res.data]);
       setRoom(res.data.name);
       setMessages([]);
@@ -127,7 +128,7 @@ const SquadRoom = () => {
               <div key={idx} className="chat-message">
                 <div className="chat-author-info">
                   <img
-                    src={`http://localhost:3000/uploads/${msg.userId?.profilePicture}`}
+                    src={`${BACKEND_URL}/uploads/${msg.userId?.profilePicture}`}
                     alt="profile"
                     className="avatar"
                     onError={(e) => { e.target.src = 'https://via.placeholder.com/32' }}

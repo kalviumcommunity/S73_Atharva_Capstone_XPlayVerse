@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './signup.css';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Signup = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -34,7 +36,7 @@ const Signup = () => {
     if (profilePicture) formData.append('profilePicture', profilePicture);
 
     try {
-      await axios.post('http://localhost:3000/api/users', formData, {
+      await axios.post(`${BACKEND_URL}/api/users`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('Signup successful! Now login.');
