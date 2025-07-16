@@ -1,68 +1,100 @@
-# Capstone Project: XPlayVerse
+# XPlayVerse 🎮
 
-## 📌 Idea Brief
-XPlayVerse is a social gaming hub where gamers can share high scores, game achievements, and esports updates.
-
-### Features:
-- **Leaderboard** displaying trending games and esports tournaments using free APIs.
-- **Social feed** where users post gaming achievements (e.g., high scores, milestones).
-- **User authentication** (signup, login, profile management).
-- **Full CRUD operations** (Create, Read, Update, Delete) for user posts and profiles.
-- **Users can share images** of their gaming achievements.
-- **Game recommendations** based on user preferences and activity.
-- **Future scope:** Real-time interactions, live esports discussions, and personalized game suggestions.
+## Table of Contents
+- [Introduction 🎬](#introduction-🎬)
+- [Features 🌟](#features-🌟)
+- [Technologies Used 💻](#technologies-used-💻)
+- [Contributing 🚀](#contributing-🚀)
+- [Acknowledgement 🙌](#acknowledgement-🙌)
+- [Contact 📧](#contact-📧)
+- [Deployed Links 🔗](#deployed-links-🔗)
 
 ---
 
-## 📅 Daily Plan & Timeline
+## Introduction 🎬
 
-### **Week 1: Ideation & Initial Setup**
-- **Day 1-2:** Finalize project scope, features, and tech stack (React.js, MongoDB, Express.js, Tailwind CSS).
-- **Day 3:** Create low-fidelity wireframes for UI/UX.
-- **Day 4-5:** Design high-fidelity UI with detailed components.
-- **Day 6-7:** Set up GitHub repository, initialize React app, and organize workflow using GitHub Projects.
+🎮 Are you a passionate gamer tired of switching between platforms to track your favorite games, or find your gaming tribe? Say hello to **XPlayVerse** — your one-stop destination for all things gaming.
+
+From discovering trending games to sharing posts, chatting live, XPlayVerse helps gamers connect, compete, and celebrate — all in one place.
 
 ---
 
-### **Week 2: Backend Development & CRUD API Implementation**
-- **Day 8-9:** Set up MongoDB database schema (User, Post, Leaderboard collections).
-- **Day 10-11:** Implement CRUD operations for **User accounts**:
-  - **POST:** New user registration.
-  - **GET:** Fetch user details.
-  - **PUT:** Edit user information.
-  - **DELETE:** Remove user account.
-- **Day 12-13:** Implement CRUD operations for **Posts** (high scores, achievements, shared images):
-  - **POST:** Users upload gaming screenshots.
-  - **GET:** Fetch posts from the database.
-  - **PUT:** Edit posts (e.g., caption, score update).
-  - **DELETE:** Remove posts.
-- **Day 14:** Deploy the backend server and test all CRUD APIs.
+## Features 🌟
+
+- **User Authentication** - Secure login/signup with JWT and cookie-based sessions.
+- **Trending Leaderboard** - Displays top 40 games using RAWG API.
+- **Create & Manage Posts** - Post your thoughts, experiences, or reviews.
+- **Live Chat** - Chat with other users in real-time using Socket.io.
+- **User Profile** - View and update your own profile with game stats and posts.
+- **CRUD Functionalities** - Users can create, update, and delete posts or profiles.
 
 ---
 
-### **Week 3: Frontend Development & Integration**
-- **Day 15-16:** Build core React components:
-  - Navbar
-  - Feed (showing gaming posts)
-  - Leaderboard (trending games, tournaments)
-  - Profile Page
-- **Day 17-18:** Connect frontend with backend CRUD APIs.
-- **Day 19-20:** Develop the **Post System** for users to share gaming screenshots & achievements.
-- **Day 21:** Implement **Game Recommendations** feature based on user activity.
-- **Day 22:** Deploy the frontend server.
+## Technologies Used 💻
+
+- **Frontend:** React, Axios, HTML5, CSS3
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Authentication:** JWT, Cookies
+- **External APIs:** RAWG API
+- **Libraries:** Socket.io, bcrypt, dotenv, cors
+- **Deployment:**
+  - Frontend: **Netlify**
+  - Backend: **Render**
+- **Version Control:** Git + GitHub
 
 ---
 
-### **Week 4: Testing & Deployment**
-- **Day 23-24:** Perform **database read/write tests**, ensuring smooth CRUD operations.
-- **Day 25:** Implement **UI improvements** and add error handling.
-- **Day 26:** Conduct **final API testing** for all CRUD functions.
-- **Day 27:** Deploy the **full-stack application** (frontend + backend).
-- **Day 28:** Gather **feedback, refine UI/UX, and prepare project documentation**.
+## Contributing 🚀
 
-## Render Link 
-https://s73-atharva-capstone-xplayverse.onrender.com/
+We welcome contributions to **XPlayVerse**! Whether you spot a bug, want to suggest a new feature, or enhance the UI/UX — we’d love your help!
 
+1. Fork the Repository
 
-## Netlify Link
-https://xplayverse-demo.netlify.app/
+     - Click the "Fork" button at the top right corner of this page to create a copy of the repository on your GitHub account.
+
+2. Clone the Repository
+
+  ```bash
+git clone https://github.com/kalviumcommunity/S73_Atharva_Capstone_XPlayVerse
+````
+
+3. Install Dependencies
+
+    - Naviagte to directories and use npm install to install the necessary packages.
+
+4. Set up ENV Variables
+
+     - Create a .env file in server folder and fill in the necessary environment variables
+
+5. Create  PR Request
+
+    - After you have made the necessary changes push the code after creating a new branch
+  
+
+## Acknowledgement 🙌
+
+A big thank you to everyone who made **XPlayVerse** possible:
+
+- **RAWG API** – For providing detailed and dynamic game data.
+- **Open Source Libraries** – Shoutout to contributors of React, Express, MongoDB, and more.
+- **Socket.io** – For enabling real-time communication between users.
+- **Netlify & Render** – For seamless and fast deployment solutions.
+
+---
+
+## Contact 📧
+
+We’d love to hear from you! Feedback, collaboration, or just a gamer hello — feel free to reach out:
+
+- **Email:** atharvadudhe125@mail.com  
+- **GitHub:** [atharvadudhe](https://github.com/atharvadudhe)  
+- **LinkedIn:** [Atharva Dudhe](https://www.linkedin.com/in/atharva-dudhe/)
+
+---
+
+## Deployed Links 🔗
+
+- **Backend:** https://s73-atharva-capstone-xplayverse-1.onrender.com
+- **Frontend:** https://xplayverse.netlify.app/
+
