@@ -4,7 +4,7 @@ import User from "../models/User.js";
 export const createPost = async (req, res) => {
   try {
     const { userId, caption } = req.body;
-    const image = req.file ? req.file.filename : null;
+    const image = req.file ? req.file.secure_url : null;
 
     const post = new Post({ userId, caption, image });
     await post.save();

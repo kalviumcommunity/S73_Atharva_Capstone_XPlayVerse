@@ -83,10 +83,10 @@ const Feeds = () => {
             <div key={post._id} className="post-card">
               <div className="post-header">
                 <img
-                  src={`${BACKEND_URL}/uploads/${post.userId?.profilePicture}`}
+                  src={post.userId?.profilePicture || "https://avatar.iran.liara.run/public"}
                   alt="profile"
                   className="post-profile-pic"
-                  onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
+                  onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
                 />
                 <p className="post-username">@{post.userId?.username || 'Anonymous'}</p>
               </div>
@@ -94,7 +94,7 @@ const Feeds = () => {
                 <p className="post-caption">{post.caption}</p>
                 {post.image && (
                   <img
-                    src={`${BACKEND_URL}/uploads/${post.image}`}
+                    src={post.image}
                     alt="post"
                     className="post-image"
                   />

@@ -88,8 +88,8 @@ const Profile = () => {
           <h2>User Profile</h2>
           <img src={
               user.profilePicture
-                ? `${BACKEND_URL}/uploads/${user.profilePicture}`
-                : 'https://via.placeholder.com/100'
+                ? user.profilePicture
+                : 'https://avatar.iran.liara.run/public'
             }
             alt="Profile"
             className="profile-picture"
@@ -121,7 +121,7 @@ const Profile = () => {
               <div key={post._id} className="profile-post-card">
                 <div className="profile-post-user">
                   <img
-                    src={`${BACKEND_URL}/uploads/${post.userId?.profilePicture}`}
+                    src={post.userId?.profilePicture}
                     alt="profile"
                     className="profile-user-image"
                     onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
@@ -134,7 +134,7 @@ const Profile = () => {
                 <p className="profile-post-caption">{post.caption}</p>
                 {post.image && (
                   <img
-                    src={`${BACKEND_URL}/uploads/${post.image}`}
+                    src={post.image}
                     alt="Post"
                     className="profile-post-image"
                   />
@@ -146,13 +146,13 @@ const Profile = () => {
           <p className="profile-no-posts">No posts found.</p>
         )}
       </div>
-      <div className="user-scroller-section">
+      {/* <div className="user-scroller-section">
         <h3>Other Users on the Website</h3>
         <div className="user-scroller">
           {allUsers.map(u => (
             <div key={u._id} className="user-tile">
               <img
-                src={u.profilePicture ? `${BACKEND_URL}/uploads/${u.profilePicture}` : 'https://via.placeholder.com/40'}
+                src={u.profilePicture ? u.profilePicture : 'https://avatar.iran.liara.run/public'}
                 alt="profile"
                 className="tile-profile-pic"
               />
@@ -163,7 +163,7 @@ const Profile = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../Navbar/Navbar';
 import axios from 'axios';
-import './leaderboard.css';
+import './Leaderboard.css';
 
 const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 

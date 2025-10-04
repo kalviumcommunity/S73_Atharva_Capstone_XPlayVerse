@@ -128,10 +128,10 @@ const SquadRoom = () => {
               <div key={idx} className="chat-message">
                 <div className="chat-author-info">
                   <img
-                    src={`${BACKEND_URL}/uploads/${msg.userId?.profilePicture}`}
+                    src={msg.userId?.profilePicture}
                     alt="profile"
                     className="avatar"
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/32' }}
+                    onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
                   />
                   <strong className="author">@{msg.userId?.username || msg.author}</strong>
                   <span className="timestamp">({msg.time})</span>
