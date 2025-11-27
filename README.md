@@ -27,8 +27,6 @@ From discovering trending games to sharing posts, chatting live, XPlayVerse help
 - **Live Chat** - Chat with other users in real-time using Socket.io.
 - **User Profile** - View and update your own profile with game stats and posts.
 - **CRUD Functionalities** - Users can create, update, and delete posts or profiles.
-<<<<<<< HEAD
-=======
 - **Image Uploads** - Profile pictures and post images are uploaded and hosted on Cloudinary for persistent access.
 
 ---

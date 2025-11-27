@@ -10,6 +10,7 @@ const Feeds = () => {
   const [caption, setCaption] = useState('');
   const [image, setImage] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false); 
 
   const userId = localStorage.getItem('userId');
 
@@ -38,6 +39,8 @@ const Feeds = () => {
 
     if (!caption && !image) return alert('Please add text or image');
 
+    setLoading(true);
+
     const formData = new FormData();
     formData.append('userId', userId);
     formData.append('caption', caption);
@@ -53,6 +56,8 @@ const Feeds = () => {
     } catch (err) {
       console.error(err);
       alert('Failed to create post');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,7 +78,9 @@ const Feeds = () => {
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
             />
-            <button type="submit">Post</button>
+            <button type="submit" disabled={loading}>
+              {loading ? 'Posting...' : 'Post'}
+            </button>
           </form>
         </div>
 

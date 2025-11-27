@@ -75,3 +75,8 @@ body, html {
 .login-form a:hover {
   text-decoration: underline;
 }
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

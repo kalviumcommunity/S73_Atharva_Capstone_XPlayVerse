@@ -241,3 +241,8 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
