@@ -27,10 +27,7 @@ From discovering trending games to sharing posts, chatting live, XPlayVerse help
 - **Live Chat** - Chat with other users in real-time using Socket.io.
 - **User Profile** - View and update your own profile with game stats and posts.
 - **CRUD Functionalities** - Users can create, update, and delete posts or profiles.
-<<<<<<< HEAD
-=======
 - **Image Uploads** - Profile pictures and post images are uploaded and hosted on Cloudinary for persistent access.
->>>>>>> c54fff3 (implemented cloud based uploads)
 
 ---
 
@@ -84,10 +81,7 @@ A big thank you to everyone who made **XPlayVerse** possible:
 - **Open Source Libraries** – Shoutout to contributors of React, Express, MongoDB, and more.
 - **Socket.io** – For enabling real-time communication between users.
 - **Netlify & Render** – For seamless and fast deployment solutions.
-<<<<<<< HEAD
-=======
 - **Cloudinary** – For hosting profile pictures and post images reliably in the cloud.
->>>>>>> c54fff3 (implemented cloud based uploads)
 
 ---
 

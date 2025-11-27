@@ -8,6 +8,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,6 +16,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(`${BACKEND_URL}/api/users/login`, form);
       localStorage.setItem('userId', res.data.userId);
@@ -23,6 +25,8 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       alert('Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,10 +34,26 @@ const Login = () => {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        <input type="email" name="email" placeholder="your@email.com" onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-        <button type="submit">Login</button>
-        <p>Don't have an account? <Link to='/signup'>Signup</Link></p>
+        <input
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        <p>
+          Don't have an account? <Link to="/signup">Signup</Link>
+        </p>
       </form>
     </div>
   );

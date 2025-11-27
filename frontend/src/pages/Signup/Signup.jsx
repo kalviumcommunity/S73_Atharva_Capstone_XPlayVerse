@@ -15,6 +15,7 @@ const Signup = () => {
     confirmPassword: '',
   });
   const [profilePicture, setProfilePicture] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,6 +37,7 @@ const Signup = () => {
     if (profilePicture) formData.append('profilePicture', profilePicture);
 
     try {
+      setLoading(true);
       await axios.post(`${BACKEND_URL}/api/users`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -44,6 +46,8 @@ const Signup = () => {
     } catch (err) {
       console.error(err);
       alert('Signup failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,7 +104,16 @@ const Signup = () => {
           accept="image/*"
           onChange={handleFileChange}
         />
-        <button type="submit">Begin Journey</button>
+        <button type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <span className="spinner"></span> Creating Account...
+            </>
+          ) : (
+            'Begin Journey'
+          )}
+        </button>
+
         <p>Already have an account? <Link to='/login'>Login</Link></p>
       </form>
     </div>
