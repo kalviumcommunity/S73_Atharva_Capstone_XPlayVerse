@@ -13,6 +13,7 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 export const upload = multer({ storage });
 
+// Upload image buffer directly using Cloudinary's upload_stream
 export const uploadToCloudinaryMiddleware = async (req, res, next) => {
   if (!req.file) return next();
 
@@ -35,7 +36,7 @@ export const uploadToCloudinaryMiddleware = async (req, res, next) => {
 
     req.file.secure_url = result.secure_url;
     req.file.filename = result.secure_url;
-
+    console.log(result.secure_url);
     next();
   } catch (err) {
     console.error('Cloudinary upload error:', err);
