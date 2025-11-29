@@ -1,6 +1,6 @@
 import express from "express";
 import { upload, uploadToCloudinaryMiddleware } from "../middleware/uploadMiddleware.js";
-import { GET, GETBYID, LOGIN, SIGNUP, DELETE, UPDATE } from "../controller/userController.js";
+import { GET, GETBYID, LOGIN, SIGNUP, DELETE, UPDATE, LOGOUT } from "../controller/userController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const userRouter = express.Router();
