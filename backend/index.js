@@ -10,16 +10,24 @@ import path from 'path';
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./sockets/socketHandler.js";
+import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config()
-const app = express()
-app.use(express.json())
-app.use(cors())
-const server = http.createServer(app);
 const FRONTEND_URL = process.env.FRONTEND_URL;
+
+const app = express()
+app.use(express.json());
+app.use(cookieParser());
+// app.use(cors());
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true,
+}));
+
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {

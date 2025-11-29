@@ -28,11 +28,13 @@ export const SIGNUP = async (req, res) => {
 
         await newUser.save();
 
+        console.log(newUser);
         return res.status(201).json({
             message: "User registered successfully!",
             newUser
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: "Error creating user", error: err });
     }
 };
@@ -65,12 +67,15 @@ export const LOGIN = async (req, res) => {
             maxAge: 10 * 60 * 1000,
         });
 
+        console.log(user);
+
         return res.status(200).json({
             message: "Login successful",
             userId: user._id
         });
 
     } catch (err) {
+        console.log(err)
         return res.status(500).json({ message: "Error Logging User", error: err });
     }
 };
