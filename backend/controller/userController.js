@@ -53,6 +53,7 @@ export const GETBYID = async (req, res) => {
     }
 }
 
+// Update user details
 export const UPDATE = async (req, res) => {
     try {
         const id = req.params.id;
@@ -61,12 +62,15 @@ export const UPDATE = async (req, res) => {
             return res.status(404).json({ message: "User not found!" });
         }
         const updatedData = await User.findByIdAndUpdate(id, req.body, {new:true});
+        console.log(updatedData);
         return res.json(updatedData);
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: "Server error", error: err });
     }
 }
 
+// Delete user
 export const DELETE = async (req, res) => {
     try {
         const id = req.params.id;
@@ -77,6 +81,7 @@ export const DELETE = async (req, res) => {
         await User.findByIdAndDelete(id);
         return res.status(200).json({ message: "User deleted successfully!" });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: "Server error", error: err });
     }
 }
