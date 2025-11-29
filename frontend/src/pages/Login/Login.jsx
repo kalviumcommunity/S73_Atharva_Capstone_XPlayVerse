@@ -18,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/users/login`, form);
+      const res = await axios.post(`${BACKEND_URL}/api/users/login`, form, { withCredentials: true });
       localStorage.setItem('userId', res.data.userId);
       alert('Login successful!');
       navigate('/feeds');

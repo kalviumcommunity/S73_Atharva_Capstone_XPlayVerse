@@ -16,7 +16,7 @@ const Feeds = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`${BACKEND_URL}/api/users/${userId}`)
+      axios.get(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true })
         .then(res => setUser(res.data))
         .catch(err => console.error(err));
     }
@@ -26,7 +26,7 @@ const Feeds = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/posts`);
+      const res = await axios.get(`${BACKEND_URL}/api/posts`, { withCredentials: true });
       const sortedPosts = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setPosts(sortedPosts);
     } catch (err) {
@@ -48,7 +48,8 @@ const Feeds = () => {
 
     try {
       await axios.post(`${BACKEND_URL}/api/posts`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' }, 
+        withCredentials: true
       });
       setCaption('');
       setImage(null);
