@@ -40,6 +40,7 @@ const Signup = () => {
       setLoading(true);
       await axios.post(`${BACKEND_URL}/api/users`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true
       });
       alert('Signup successful! Now login.');
       navigate('/login');

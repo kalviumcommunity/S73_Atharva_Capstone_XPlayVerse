@@ -19,7 +19,7 @@ const Profile = () => {
   useEffect(() => {
     if (!userId) return;
 
-    axios.get(`${BACKEND_URL}/api/users/${userId}`)
+    axios.get(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true })
       .then(res => {
         setUser(res.data);
         setForm({
@@ -30,18 +30,18 @@ const Profile = () => {
       })
       .catch(err => console.error(err));
 
-    axios.get(`${BACKEND_URL}/api/users`)
+    axios.get(`${BACKEND_URL}/api/users`, { withCredentials: true })
       .then(res => setAllUsers(res.data))
       .catch(err => console.error(err));
 
-    axios.get(`${BACKEND_URL}/api/posts/user/${userId}`)
+    axios.get(`${BACKEND_URL}/api/posts/user/${userId}`, { withCredentials: true })
       .then(res => setUserPosts(res.data))
       .catch(err => console.error(err));
   }, [userId]);
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${BACKEND_URL}/api/users/${userId}`);
+      await axios.delete(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true });
       localStorage.removeItem('userId');
       alert('Account deleted');
       navigate('/signup');
@@ -53,7 +53,7 @@ const Profile = () => {
 
   const handleUpdate = async () => {
     try {
-      const res = await axios.put(`${BACKEND_URL}/api/users/${userId}`, form);
+      const res = await axios.put(`${BACKEND_URL}/api/users/${userId}`, form, { withCredentials: true });
       setUser(res.data);
       alert('Profile updated successfully!');
       setIsEditing(false);
@@ -65,7 +65,7 @@ const Profile = () => {
 
   const handleDeletePost = async (postId) => {
     try {
-      await axios.delete(`${BACKEND_URL}/api/posts/${postId}`);
+      await axios.delete(`${BACKEND_URL}/api/posts/${postId}`), { withCredentials: true };
       setUserPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
       alert('Post deleted successfully');
     } catch (err) {

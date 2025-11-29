@@ -19,14 +19,14 @@ const SquadRoom = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`${BACKEND_URL}/api/users/${userId}`)
+      axios.get(`${BACKEND_URL}/api/users/${userId}`, {withCredentials:true})
         .then(res => setUser(res.data))
         .catch(err => console.error(err));
     }
   }, [userId]);
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/rooms`)
+    axios.get(`${BACKEND_URL}/api/rooms`, {withCredentials:true})
       .then(res => {
         setRooms(res.data);
         if (res.data.length > 0 && !room) {
@@ -79,7 +79,7 @@ const SquadRoom = () => {
     if (!newRoomName.trim()) return;
 
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/rooms`, { name: newRoomName.trim() });
+      const res = await axios.post(`${BACKEND_URL}/api/rooms`, { name: newRoomName.trim() }, {withCredentials:true});
       setRooms(prev => [...prev, res.data]);
       setRoom(res.data.name);
       setMessages([]);
