@@ -1,0 +1,23 @@
+meta {
+  name: SIGNUP
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/users/
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  name: test
+  username: testX123
+  email: test@gmail.com
+  password: test123
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
