@@ -1,0 +1,27 @@
+meta {
+  name: Update User
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/users/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 692d458a709cf11f59327005
+}
+
+body:json {
+  {
+    "username": "testX"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
