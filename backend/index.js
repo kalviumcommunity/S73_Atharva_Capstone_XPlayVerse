@@ -1,31 +1,48 @@
-import express from "express"
-import dotenv from "dotenv"
-import cors from "cors"
-import mongoose from "mongoose"
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import passport from "passport";
+
 import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import roomRouter from "./routes/roomRoutes.js";
-import { fileURLToPath } from 'url';
-import path from 'path';
+import authRoutes from "./routes/authRoutes.js";
+
+import initGooglePassport from "./config/passportGoogle.js";
+
+import { fileURLToPath } from "url";
+import path from "path";
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./sockets/socketHandler.js";
-import cookieParser from "cookie-parser";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config()
 const FRONTEND_URL = process.env.FRONTEND_URL;
+const PORT = process.env.PORT || 3000;
+const URL = process.env.URL;
 
-const app = express()
+const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors());
-app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true,
-}));
+
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true, 
+  })
+);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+initGooglePassport(passport);
+app.use(passport.initialize());
 
 const server = http.createServer(app);
 
@@ -37,14 +54,10 @@ const io = new Server(server, {
   },
 });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 socketHandler(io);
 
-const PORT = process.env.PORT || 3000
-const URL = process.env.URL
-
-mongoose.connect(URL)
+mongoose
+  .connect(URL)
   .then(() => {
     console.log("Database Connected!");
     startServer();
@@ -55,10 +68,12 @@ mongoose.connect(URL)
   });
 
 const startServer = () => {
-  app.get('/', (req, res) => {
+  app.get("/", (req, res) => {
     res.send("<h1>Welcome to XPlayVerse!!</h1>");
   });
-  
+
+  app.use("/api", authRoutes);
+
   app.use("/api/users", userRouter);
   app.use("/api/posts", postRouter);
   app.use("/api/rooms", roomRouter);

@@ -18,29 +18,41 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/users/login`, form, { withCredentials: true });
+      const res = await axios.post(
+        `${BACKEND_URL}/api/users/login`,
+        form,
+        { withCredentials: true }
+      );
+
       localStorage.setItem('userId', res.data.userId);
       alert('Login successful!');
       navigate('/feeds');
     } catch (err) {
       console.error(err);
-      alert('Login failed');
+      alert(err?.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${BACKEND_URL}/api/auth/google`;
+  };
+
   return (
     <div className="login-container">
+
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
+
         <input
           type="email"
           name="email"
-          placeholder="your@email.com"
+          placeholder="email@example.com"
           onChange={handleChange}
           required
         />
+
         <input
           type="password"
           name="password"
@@ -48,13 +60,32 @@ const Login = () => {
           onChange={handleChange}
           required
         />
+
         <button type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
+
+        <div className="google-btn-container">
+          <button
+            type="button"
+            className="google-btn"
+            onClick={handleGoogleLogin}
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google Logo"
+              className="google-icon"
+            />
+            Continue with Google
+          </button>
+        </div>
+
         <p>
-          Don't have an account? <Link to="/signup">Signup</Link>
+          Don&apos;t have an account?{' '}
+          <Link to="/signup">Signup</Link>
         </p>
       </form>
+
     </div>
   );
 };
