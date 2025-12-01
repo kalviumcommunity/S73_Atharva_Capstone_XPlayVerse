@@ -34,13 +34,16 @@ router.get(
       res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
-      // redirect to frontend auth success route and attach JWT so client can use it
+
       const frontendBase = process.env.FRONTEND_URL || 'http://localhost:3000';
-      const redirectUrl = `${frontendBase}/auth/success?token=${encodeURIComponent(token)}`;
+      const redirectUrl = process.env.NODE_ENV === 'production'
+        ? `${frontendBase}/auth/success`
+        : `${frontendBase}/auth/success?token=${encodeURIComponent(token)}`;
+
       return res.redirect(redirectUrl);
       
     } catch (err) {
@@ -50,10 +53,9 @@ router.get(
   }
 );
 
-// GET /api/me - return authenticated user based on token cookie / Authorization header
+
 router.get('/me', authMiddleware, (req, res) => {
   try {
-    // authMiddleware populates req.user
     return res.json({ user: req.user });
   } catch (err) {
     console.error('GET /api/me error:', err);

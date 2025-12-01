@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import './Login.css';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import "./Login.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Login = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -18,18 +18,16 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${BACKEND_URL}/api/users/login`,
-        form,
-        { withCredentials: true }
-      );
+      const res = await axios.post(`${BACKEND_URL}/api/users/login`, form, {
+        withCredentials: true,
+      });
 
-      localStorage.setItem('userId', res.data.userId);
-      alert('Login successful!');
-      navigate('/feeds');
+      localStorage.setItem("userId", res.data.userId);
+      alert("Login successful!");
+      navigate("/feeds");
     } catch (err) {
       console.error(err);
-      alert(err?.response?.data?.message || 'Login failed');
+      alert(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -41,7 +39,6 @@ const Login = () => {
 
   return (
     <div className="login-container">
-
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
 
@@ -62,30 +59,28 @@ const Login = () => {
         />
 
         <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <div className="google-btn-container">
           <button
             type="button"
-            className="google-btn"
+            className="google-login-btn"
             onClick={handleGoogleLogin}
           >
             <img
-              src="https://developers.google.com/identity/images/g-logo.png"
+              src="g-logo.png"
               alt="Google Logo"
-              className="google-icon"
+              className="google-login-icon"
             />
-            Continue with Google
+            <span className="google-login-text">Sign in with Google</span>
           </button>
         </div>
 
         <p>
-          Don&apos;t have an account?{' '}
-          <Link to="/signup">Signup</Link>
+          Don&apos;t have an account? <Link to="/signup">Signup</Link>
         </p>
       </form>
-
     </div>
   );
 };

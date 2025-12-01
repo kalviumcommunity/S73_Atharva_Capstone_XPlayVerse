@@ -9,12 +9,9 @@ const AuthSuccess = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // If the backend attached the JWT in the query string (redirect), use it.
         const params = new URLSearchParams(window.location.search);
         const token = params.get('token');
 
-        // When token is present use it in query (authMiddleware accepts query token),
-        // otherwise attempt cookie-based auth
         const url = token ? `${BACKEND_URL}/api/me?token=${encodeURIComponent(token)}` : `${BACKEND_URL}/api/me`;
         const opts = token ? { method: 'GET' } : { method: 'GET', credentials: 'include' };
 
