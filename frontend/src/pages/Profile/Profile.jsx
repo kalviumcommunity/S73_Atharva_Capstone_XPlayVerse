@@ -1,4 +1,3 @@
-// src/pages/Profile/Profile.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Profile/Profile.css';
@@ -15,8 +14,6 @@ const Profile = () => {
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  // try to use cookie-authenticated endpoint first, fallback to localStorage
   const storedUserId = localStorage.getItem('userId');
 
   useEffect(() => {
@@ -24,25 +21,22 @@ const Profile = () => {
 
     const fetchCurrentUser = async () => {
       try {
-        // Request current user using HttpOnly cookie (must include credentials)
         const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
 
         if (!mounted) return;
-        const currentUser = res.data.user || res.data; // accommodate variations
+        const currentUser = res.data.user || res.data; 
         setUser(currentUser);
-        localStorage.setItem('userId', currentUser._id); // keep backwards compatibility
+        localStorage.setItem('userId', currentUser._id);
         setForm({
           name: currentUser.name || '',
           username: currentUser.username || '',
           email: currentUser.email || '',
         });
 
-        // fetch user posts and all users in parallel
         fetchUserPosts(currentUser._id);
         fetchAllUsers();
 
       } catch (err) {
-        // If cookie auth fails, fallback to localStorage userId if present
         if (storedUserId) {
           fetchByIdFallback(storedUserId);
         } else {
@@ -102,8 +96,7 @@ const Profile = () => {
     fetchCurrentUser();
 
     return () => { mounted = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run only once on mount
+  }, []);
 
   const handleDelete = async () => {
     try {
@@ -198,7 +191,7 @@ const Profile = () => {
                     src={post.userId?.profilePicture}
                     alt="profile"
                     className="profile-user-image"
-                    onError={(e) => { e.target.src = 'https://via.placeholder.com/40' }}
+                    onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
                   />
                   <p className="profile-username">@{post.userId?.username || 'Anonymous'}</p>
                   <button className="profile-post-delete-btn" onClick={() => handleDeletePost(post._id)} title="Delete Post">
