@@ -6,6 +6,7 @@ import Leaderboard from './pages/Leaderboard/Leaderboard';
 import Profile from './pages/Profile/Profile';
 import Feeds from './pages/Feed/Feeds';
 import SquadRoom from './pages/Squad/Squad';
+import AuthSuccess from './pages/Login/AuthSuccess';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/feeds" element={<Feeds />} />
         <Route path="/squad" element={<SquadRoom />} />
+        <Route path="/auth/success" element={<AuthSuccess />} />
       </Routes>
     </BrowserRouter>
   );

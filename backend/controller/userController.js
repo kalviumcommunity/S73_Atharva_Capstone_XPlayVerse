@@ -12,6 +12,11 @@ export const SIGNUP = async (req, res) => {
 
     try {
         const existingUser = await User.findOne({ email });
+
+        if (existingUser && existingUser.provider === "google") {
+            return res.status(400).json({ message: "This email is already registered via Google. Please login using Google." });
+        }
+
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered!" });
         }
@@ -23,18 +28,18 @@ export const SIGNUP = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            provider: "local",
             profilePicture
         });
 
         await newUser.save();
 
-        console.log(newUser);
         return res.status(201).json({
             message: "User registered successfully!",
             newUser
         });
     } catch (err) {
-        console.log(err);
+        console.log("SIGNUP ERROR:", err);
         return res.status(500).json({ message: "Error creating user", error: err });
     }
 };
@@ -49,6 +54,10 @@ export const LOGIN = async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
+        if (user.provider === "google") {
+            return res.status(400).json({ message: "This account is registered with Google. Please login using Google." });
+        }
+
         const valid = await bcrypt.compare(password, user.password);
 
         if (!valid) {
@@ -56,19 +65,17 @@ export const LOGIN = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user._id, username: user.username },
+            { id: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: "10m" }
+            { expiresIn: "7d" }
         );
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 10 * 60 * 1000,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
-
-        console.log(user);
 
         return res.status(200).json({
             message: "Login successful",
@@ -76,19 +83,24 @@ export const LOGIN = async (req, res) => {
         });
 
     } catch (err) {
-        console.log(err)
+        console.log("LOGIN ERROR:", err);
         return res.status(500).json({ message: "Error Logging User", error: err });
     }
 };
 
 export const LOGOUT = (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production"
+    });
+
     return res.json({ message: "Logged out successfully!" });
 };
 
 export const GET = async (req, res) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({}).select("-password");
         if (users.length === 0) {
             return res.status(404).json({ message: "No users found!" });
         }
@@ -101,7 +113,7 @@ export const GET = async (req, res) => {
 export const GETBYID = async (req, res) => {
     const id = req.params.id;
     try {
-        const user = await User.findById(id);
+        const user = await User.findById(id).select("-password");
         if (!user) {
             return res.status(404).json({ message: "User not found!" });
         }
@@ -120,9 +132,9 @@ export const UPDATE = async (req, res) => {
             return res.status(404).json({ message: "User not found!" });
         }
 
-        const updatedData = await User.findByIdAndUpdate(id, req.body, { new: true });
-
+        const updatedData = await User.findByIdAndUpdate(id, req.body, { new: true }).select("-password");
         return res.json(updatedData);
+
     } catch (err) {
         return res.status(500).json({ message: "Server error", error: err });
     }

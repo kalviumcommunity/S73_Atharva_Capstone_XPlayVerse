@@ -80,3 +80,32 @@ button[disabled] {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.google-btn-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.google-btn:hover {
+  background: #f5f5f5;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}

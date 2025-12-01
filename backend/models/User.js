@@ -1,42 +1,78 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+const { Schema } = mongoose;
+
+const userSchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true
     },
+
     username: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      unique: true,
+      sparse: true,
+      required: function () {
+        return !this.googleId;
+      }
     },
+
     email: {
-        type:String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true
     },
-    password:{
-        type: String,
-        required: true
+
+    password: {
+      type: String,
+      required: function () {
+        return !this.googleId;
+      }
     },
-    games:{
-        type: [String],
-        default: []
+
+    games: {
+      type: [String],
+      default: []
     },
-    achievements: { 
-        type: [String], 
-        default: [] 
+
+    achievements: {
+      type: [String],
+      default: []
     },
-    highScore: { 
-        type: Number, 
-        default: 0 
+
+    highScore: {
+      type: Number,
+      default: 0
     },
+
     profilePicture: {
-        type: String,
-        default: '',
+      type: String,
+      default: ''
     },
-})
 
-const User = mongoose.model("User", userSchema);
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
 
-export default User;
+    provider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local'
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ googleId: 1 }, { unique: true, sparse: true });
+userSchema.index({ username: 1 }, { unique: true, sparse: true });
+
+export default mongoose.model('User', userSchema);
