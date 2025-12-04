@@ -11,7 +11,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@google/generative-ai": "^0.3.0",
+    "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^1.1.2",
+    "@langchain/google-genai": "^2.0.2",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.30.0",
     "cookie-parser": "^1.4.7",
