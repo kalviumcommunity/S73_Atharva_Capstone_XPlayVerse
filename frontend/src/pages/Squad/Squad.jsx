@@ -14,6 +14,7 @@ const SquadRoom = () => {
   const [user, setUser] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState('');
+  const [smartReplies, setSmartReplies] = useState([]); 
 
   const userId = localStorage.getItem('userId');
 
@@ -36,6 +37,20 @@ const SquadRoom = () => {
       .catch(err => console.error(err));
   }, []);
 
+  const fetchSmartReplies = async (text) => {
+    try {
+      const res = await axios.post(
+        `${BACKEND_URL}/api/ai/smart-reply`,
+        { message: text },
+        { withCredentials: true }
+      );
+
+      setSmartReplies(res.data);
+    } catch (err) {
+      console.error("Smart Reply Error:", err);
+    }
+  };
+
   useEffect(() => {
     if (!user || !room) return;
 
@@ -44,11 +59,17 @@ const SquadRoom = () => {
     const handleReceiveMessage = (data) => {
       if (data.room === room) {
         setMessages(prev => [...prev, data]);
+
+        fetchSmartReplies(data.content);
       }
     };
 
     const handlePreviousMessages = (msgs) => {
       setMessages(msgs);
+
+      if (msgs.length > 0) {
+        fetchSmartReplies(msgs[msgs.length - 1].content);
+      }
     };
 
     socket.on('receive_message', handleReceiveMessage);
@@ -70,9 +91,10 @@ const SquadRoom = () => {
       userId: user?._id,
       time: new Date().toLocaleTimeString(),
     };
-    console.log(newMsg);
+
     socket.emit('send_message', newMsg);
     setMessage('');
+    setSmartReplies([]);
   };
 
   const handleAddRoom = async () => {
@@ -84,6 +106,7 @@ const SquadRoom = () => {
       setRoom(res.data.name);
       setMessages([]);
       setNewRoomName('');
+      setSmartReplies([]);
     } catch (err) {
       alert(err.response?.data?.message || 'Error creating room');
     }
@@ -111,6 +134,7 @@ const SquadRoom = () => {
                   onClick={() => {
                     setRoom(r.name);
                     setMessages([]);
+                    setSmartReplies([]);
                   }}
                 >
                   {r.name}
@@ -140,6 +164,20 @@ const SquadRoom = () => {
               </div>
             ))}
           </div>
+
+          {smartReplies.length > 0 && (
+            <div className="smart-reply-container">
+              {smartReplies.map((reply, idx) => (
+                <button
+                  key={idx}
+                  className="smart-reply-btn"
+                  onClick={() => setMessage(reply)}
+                >
+                  {reply}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="message-input-group">
             <input

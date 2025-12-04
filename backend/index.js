@@ -9,6 +9,7 @@ import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import roomRouter from "./routes/roomRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 import initGooglePassport from "./config/passportGoogle.js";
 
@@ -77,6 +78,7 @@ const startServer = () => {
   app.use("/api/users", userRouter);
   app.use("/api/posts", postRouter);
   app.use("/api/rooms", roomRouter);
+  app.use("/api/ai", aiRoutes);
 
   server.listen(PORT, () => {
     console.log(`Server running on PORT: ${PORT}`);
