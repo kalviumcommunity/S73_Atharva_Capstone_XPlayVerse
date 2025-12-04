@@ -1,5 +1,6 @@
 import express from "express";
 import fetch from "node-fetch"; 
+import { getRecommendations } from "../controller/aiController.js";
 
 const router = express.Router();
 
@@ -43,5 +44,7 @@ router.post("/smart-reply", async (req, res) => {
     return res.status(500).json({ error: "AI generation failed" });
   }
 });
+
+router.post("/recommend", getRecommendations);
 
 export default router;

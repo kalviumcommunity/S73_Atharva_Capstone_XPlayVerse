@@ -7,6 +7,7 @@ import Profile from './pages/Profile/Profile';
 import Feeds from './pages/Feed/Feeds';
 import SquadRoom from './pages/Squad/Squad';
 import AuthSuccess from './pages/Login/AuthSuccess';
+import GameSuggestor from './pages/GameSuggestor/GameSuggestor';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/feeds" element={<Feeds />} />
         <Route path="/squad" element={<SquadRoom />} />
         <Route path="/auth/success" element={<AuthSuccess />} />
+        <Route path="/suggest" element={<GameSuggestor />} />
       </Routes>
     </BrowserRouter>
   );

@@ -17,6 +17,7 @@ const Navbar = () => {
           <Link to="/feeds">FEEDS</Link>
           <Link to="/squad">SQUAD</Link>
           <Link to="/leaderboard">LEADERBOARD</Link>
+          <Link to="/suggest">SUGGEST</Link>
           <Link to="/profile">PROFILE</Link>
           <button onClick={handleLogout}>LOGOUT</button>
         </div>
