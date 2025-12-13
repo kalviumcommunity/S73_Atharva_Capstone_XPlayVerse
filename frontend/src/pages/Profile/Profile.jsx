@@ -24,7 +24,7 @@ const Profile = () => {
         const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
 
         if (!mounted) return;
-        const currentUser = res.data.user || res.data; 
+        const currentUser = res.data.user || res.data;
         setUser(currentUser);
         localStorage.setItem('userId', currentUser._id);
         setForm({
@@ -35,7 +35,6 @@ const Profile = () => {
 
         fetchUserPosts(currentUser._id);
         fetchAllUsers();
-
       } catch (err) {
         if (storedUserId) {
           fetchByIdFallback(storedUserId);
@@ -156,11 +155,19 @@ const Profile = () => {
       <div className="profile-container">
         <div className="profile-card">
           <h2>User Profile</h2>
-          <img
-            src={user.profilePicture || 'https://avatar.iran.liara.run/public'}
-            alt="Profile"
-            className="profile-picture"
-          />
+
+          <div style={{ position: "relative" }}>
+            <img
+              src={user.profilePicture || 'https://avatar.iran.liara.run/public'}
+              alt="Profile"
+              className="profile-picture"
+            />
+
+            {user.isVerified && (
+              <div className="verified-badge">✔ Verified</div>
+            )}
+          </div>
+
           {isEditing ? (
             <>
               <input type="text" name="name" value={form.name} onChange={handleChange} />
@@ -180,6 +187,7 @@ const Profile = () => {
           )}
         </div>
       </div>
+
       <div className="profile-posts-section">
         <h2 className="profile-posts-title">Your Posts</h2>
         {userPosts.length > 0 ? (

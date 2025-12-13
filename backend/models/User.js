@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -7,7 +7,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     username: {
@@ -16,7 +16,7 @@ const userSchema = new Schema(
       sparse: true,
       required: function () {
         return !this.googleId;
-      }
+      },
     },
 
     email: {
@@ -24,50 +24,50 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
 
     password: {
       type: String,
       required: function () {
         return !this.googleId;
-      }
+      },
     },
 
     games: {
       type: [String],
-      default: []
+      default: [],
     },
 
     achievements: {
       type: [String],
-      default: []
+      default: [],
     },
 
     highScore: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     profilePicture: {
       type: String,
-      default: ''
+      default: "",
     },
 
     googleId: {
       type: String,
       unique: true,
-      sparse: true
+      sparse: true,
     },
 
     provider: {
       type: String,
-      enum: ['local', 'google'],
-      default: 'local'
-    }
+      enum: ["local", "google"],
+      default: "local",
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
@@ -75,4 +75,4 @@ userSchema.index({ email: 1 }, { unique: true });
 userSchema.index({ googleId: 1 }, { unique: true, sparse: true });
 userSchema.index({ username: 1 }, { unique: true, sparse: true });
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);
