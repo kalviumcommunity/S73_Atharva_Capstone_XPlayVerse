@@ -65,6 +65,11 @@ const userSchema = new Schema(
       enum: ["local", "google"],
       default: "local",
     },
+
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,
