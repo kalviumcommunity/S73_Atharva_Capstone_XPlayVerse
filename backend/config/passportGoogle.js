@@ -35,10 +35,12 @@ export default function initGooglePassport(passport) {
               googleId: profile.id,
               profilePicture: profile.photos?.[0]?.value || '',
               provider: 'google',
-              username: generateUsernameFromEmailOrName(email, profile.displayName)
+              username: generateUsernameFromEmailOrName(email, profile.displayName),
+              lastLogin: new Date()
             });
             user = await newUser.save();
           } else if (!user.googleId) {
+            user.lastLogin = new Date();
             user.googleId = profile.id;
             user.provider = 'google';
             if (!user.profilePicture) user.profilePicture = profile.photos?.[0]?.value || '';

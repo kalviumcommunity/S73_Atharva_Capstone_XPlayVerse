@@ -19,6 +19,8 @@ import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./sockets/socketHandler.js";
 
+import "./cron/deleteInactiveUsers.js";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
