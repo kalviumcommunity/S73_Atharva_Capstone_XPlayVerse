@@ -70,6 +70,15 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    verificationDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

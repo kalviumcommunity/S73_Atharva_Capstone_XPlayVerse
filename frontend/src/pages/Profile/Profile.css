@@ -324,3 +324,38 @@
   border: 2px solid #6b21a8;
   margin-right: 10px;
 }
+
+.verification-section {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 20px;
+}
+
+.verified-badge-inline {
+  background: #1a1a1a;
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.4);
+}
+
+.verify-btn-inline {
+  background: #6c3bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 12px rgba(108, 59, 255, 0.6);
+}
+
+.verify-btn-inline:hover {
+  background: #5a2dd6;
+  box-shadow: 0 0 16px rgba(108, 59, 255, 0.9);
+}

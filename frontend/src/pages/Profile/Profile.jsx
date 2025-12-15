@@ -10,9 +10,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ name: '', username: '', email: '' });
   const [isEditing, setIsEditing] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const storedUserId = localStorage.getItem('userId');
 
@@ -22,11 +22,12 @@ const Profile = () => {
     const fetchCurrentUser = async () => {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
-
         if (!mounted) return;
+
         const currentUser = res.data.user || res.data;
         setUser(currentUser);
         localStorage.setItem('userId', currentUser._id);
+
         setForm({
           name: currentUser.name || '',
           username: currentUser.username || '',
@@ -34,14 +35,9 @@ const Profile = () => {
         });
 
         fetchUserPosts(currentUser._id);
-        fetchAllUsers();
       } catch (err) {
-        if (storedUserId) {
-          fetchByIdFallback(storedUserId);
-        } else {
-          console.warn('Not authenticated (no cookie). Redirecting to login.');
-          navigate('/login');
-        }
+        if (storedUserId) fetchByIdFallback(storedUserId);
+        else navigate('/login');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -49,23 +45,20 @@ const Profile = () => {
 
     const fetchByIdFallback = async (id) => {
       try {
-        const [userRes, allUsersRes, postsRes] = await Promise.all([
+        const [userRes, postsRes] = await Promise.all([
           axios.get(`${BACKEND_URL}/api/users/${id}`, { withCredentials: true }),
-          axios.get(`${BACKEND_URL}/api/users`, { withCredentials: true }),
-          axios.get(`${BACKEND_URL}/api/posts/user/${id}`, { withCredentials: true })
+          axios.get(`${BACKEND_URL}/api/posts/user/${id}`, { withCredentials: true }),
         ]);
         if (!mounted) return;
-        const currentUser = userRes.data;
-        setUser(currentUser);
+
+        setUser(userRes.data);
         setForm({
-          name: currentUser.name || '',
-          username: currentUser.username || '',
-          email: currentUser.email || '',
+          name: userRes.data.name || '',
+          username: userRes.data.username || '',
+          email: userRes.data.email || '',
         });
-        setAllUsers(allUsersRes.data || []);
         setUserPosts(postsRes.data || []);
-      } catch (err) {
-        console.error('Fallback fetch failed:', err);
+      } catch {
         navigate('/login');
       } finally {
         if (mounted) setLoading(false);
@@ -75,58 +68,37 @@ const Profile = () => {
     const fetchUserPosts = async (uid) => {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/posts/user/${uid}`, { withCredentials: true });
-        if (!mounted) return;
-        setUserPosts(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch user posts:', err);
-      }
-    };
-
-    const fetchAllUsers = async () => {
-      try {
-        const res = await axios.get(`${BACKEND_URL}/api/users`, { withCredentials: true });
-        if (!mounted) return;
-        setAllUsers(res.data || []);
-      } catch (err) {
-        console.error('Failed to fetch all users:', err);
-      }
+        if (mounted) setUserPosts(res.data || []);
+      } catch {}
     };
 
     fetchCurrentUser();
-
     return () => { mounted = false; };
   }, []);
 
   const handleDelete = async () => {
     try {
-      const id = user?._id || localStorage.getItem('userId');
-      if (!id) {
-        alert('No user to delete');
-        return;
-      }
+      const id = user?._id || storedUserId;
+      if (!id) return;
+
       await axios.delete(`${BACKEND_URL}/api/users/${id}`, { withCredentials: true });
       localStorage.removeItem('userId');
-      alert('Account deleted');
       navigate('/signup');
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert('Failed to delete account');
     }
   };
 
   const handleUpdate = async () => {
     try {
-      const id = user?._id || localStorage.getItem('userId');
-      if (!id) {
-        alert('No user to update');
-        return;
-      }
+      const id = user?._id || storedUserId;
+      if (!id) return;
+
       const res = await axios.put(`${BACKEND_URL}/api/users/${id}`, form, { withCredentials: true });
       setUser(res.data);
-      alert('Profile updated successfully!');
       setIsEditing(false);
-    } catch (err) {
-      console.error(err);
+      alert('Profile updated');
+    } catch {
       alert('Update failed');
     }
   };
@@ -134,37 +106,45 @@ const Profile = () => {
   const handleDeletePost = async (postId) => {
     try {
       await axios.delete(`${BACKEND_URL}/api/posts/${postId}`, { withCredentials: true });
-      setUserPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
-      alert('Post deleted successfully');
-    } catch (err) {
-      console.error('Failed to delete post:', err);
-      alert('Failed to delete post. Please try again.');
+      setUserPosts(prev => prev.filter(p => p._id !== postId));
+    } catch {
+      alert('Failed to delete post');
     }
   };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   if (loading) return <div className="profile-container"><p className="loading">Loading...</p></div>;
-  if (!user) return <div className="profile-container"><p className="loading">Please Login First.</p></div>;
+  if (!user) return <div className="profile-container"><p className="loading">Please login first</p></div>;
 
   return (
     <>
       <Navbar />
+
       <div className="profile-container">
         <div className="profile-card">
-          <h2>User Profile</h2>
 
-          <div style={{ position: "relative" }}>
-            <img
-              src={user.profilePicture || 'https://avatar.iran.liara.run/public'}
-              alt="Profile"
-              className="profile-picture"
-            />
+          <h2 className="profile-title">
+            User Profile
+            {user.isVerified && <span className="profile-title-badge">✔</span>}
+          </h2>
 
-            {user.isVerified && (
-              <div className="verified-badge">✔ Verified</div>
+          <img
+            src={user.profilePicture || 'https://avatar.iran.liara.run/public'}
+            alt="Profile"
+            className="profile-picture"
+          />
+
+          <div className="verification-section">
+            {user.isVerified ? (
+              <span className="verified-badge-inline">✔ Verified Account</span>
+            ) : (
+              <button
+                className="verify-btn-inline"
+                onClick={() => navigate('/verify')}
+              >
+                Get Verified
+              </button>
             )}
           </div>
 
@@ -190,35 +170,32 @@ const Profile = () => {
 
       <div className="profile-posts-section">
         <h2 className="profile-posts-title">Your Posts</h2>
-        {userPosts.length > 0 ? (
+
+        {userPosts.length ? (
           <div className="profile-posts-grid">
             {userPosts.map(post => (
               <div key={post._id} className="profile-post-card">
                 <div className="profile-post-user">
                   <img
                     src={post.userId?.profilePicture}
-                    alt="profile"
                     className="profile-user-image"
-                    onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
+                    alt=""
+                    onError={(e) => e.target.src = 'https://avatar.iran.liara.run/public'}
                   />
-                  <p className="profile-username">@{post.userId?.username || 'Anonymous'}</p>
-                  <button className="profile-post-delete-btn" onClick={() => handleDeletePost(post._id)} title="Delete Post">
-                    ✕
-                  </button>
+                  <p className="profile-username">@{post.userId?.username}</p>
+                  <button className="profile-post-delete-btn" onClick={() => handleDeletePost(post._id)}>✕</button>
                 </div>
+
                 <p className="profile-post-caption">{post.caption}</p>
+
                 {post.image && (
-                  <img
-                    src={post.image}
-                    alt="Post"
-                    className="profile-post-image"
-                  />
+                  <img src={post.image} alt="" className="profile-post-image" />
                 )}
               </div>
             ))}
           </div>
         ) : (
-          <p className="profile-no-posts">No posts found.</p>
+          <p className="profile-no-posts">No posts found</p>
         )}
       </div>
     </>
