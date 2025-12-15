@@ -8,6 +8,7 @@ import Feeds from './pages/Feed/Feeds';
 import SquadRoom from './pages/Squad/Squad';
 import AuthSuccess from './pages/Login/AuthSuccess';
 import GameSuggestor from './pages/GameSuggestor/GameSuggestor';
+import VerifyPayment from './pages/VerifyPayment/VerifyPayment';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/squad" element={<SquadRoom />} />
         <Route path="/auth/success" element={<AuthSuccess />} />
         <Route path="/suggest" element={<GameSuggestor />} />
+        <Route path="/verify" element={<VerifyPayment />} />
       </Routes>
     </BrowserRouter>
   );

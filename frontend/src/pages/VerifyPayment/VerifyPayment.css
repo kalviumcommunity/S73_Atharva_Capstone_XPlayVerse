@@ -1,0 +1,35 @@
+.verify-page {
+  width: 100vw;
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
+}
+
+.verify-card {
+  background: #111;
+  padding: 35px;
+  width: 360px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 15px #7000ff;
+  color: white;
+}
+
+.verify-title {
+  color: #a78bfa;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.verify-subtitle {
+  color: #ccc;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.paypal-wrapper {
+  display: flex;
+  justify-content: center;
+}
