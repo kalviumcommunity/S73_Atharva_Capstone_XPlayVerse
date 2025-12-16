@@ -1,62 +1,88 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import Navbar from '../Navbar/Navbar';
-import './Feeds.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Navbar from "../Navbar/Navbar";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import {
+  Box,
+  Button,
+  TextField,
+  Avatar,
+  Typography,
+  Divider,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import VerifiedIcon from "@mui/icons-material/Verified";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Feeds = () => {
   const [posts, setPosts] = useState([]);
-  const [caption, setCaption] = useState('');
+  const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
+  const [imageUploaded, setImageUploaded] = useState(false);
 
-  const userId = localStorage.getItem('userId');
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  const userId = localStorage.getItem("userId");
+
+  const showToast = (message, severity = "success") => {
+    setToast({ open: true, message, severity });
+  };
 
   useEffect(() => {
-    if (userId) {
-      axios.get(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true })
-        .then(res => setUser(res.data))
-        .catch(err => console.error(err));
-    }
-
     fetchPosts();
-  }, [userId]);
+  }, []);
 
   const fetchPosts = async () => {
-    try {
-      const res = await axios.get(`${BACKEND_URL}/api/posts`, { withCredentials: true });
-      const sortedPosts = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setPosts(sortedPosts);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await axios.get(`${BACKEND_URL}/api/posts`, {
+      withCredentials: true,
+    });
+
+    setPosts(
+      res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    );
   };
 
   const handlePostSubmit = async (e) => {
     e.preventDefault();
 
-    if (!caption && !image) return alert('Please add text or image');
+    if (!caption && !image) {
+      showToast("Please add text or image", "error");
+      return;
+    }
 
     setLoading(true);
 
     const formData = new FormData();
-    formData.append('userId', userId);
-    formData.append('caption', caption);
-    if (image) formData.append('image', image);
+    formData.append("userId", userId);
+    formData.append("caption", caption);
+    if (image) formData.append("image", image);
 
     try {
       await axios.post(`${BACKEND_URL}/api/posts`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }, 
-        withCredentials: true
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
-      setCaption('');
+
+      setCaption("");
       setImage(null);
+      setImageUploaded(false);
       fetchPosts();
-    } catch (err) {
-      console.error(err);
-      alert('Failed to create post');
+      showToast("Post created successfully", "success");
+    } catch {
+      showToast("Failed to create post", "error");
     } finally {
       setLoading(false);
     }
@@ -65,53 +91,259 @@ const Feeds = () => {
   return (
     <>
       <Navbar />
-      <div className="feeds-container">
-        <div className="post-creator">
-          <h2>Create a Post</h2>
-          <form onSubmit={handlePostSubmit} encType="multipart/form-data">
-            <textarea
-              placeholder="What's on your mind?"
+
+      <Box
+        sx={{
+          display: "flex",
+          gap: "30px",
+          maxWidth: "1200px",
+          padding: "20px",
+          marginLeft: "200px",
+          marginTop: "100px",
+          minHeight: "100vh",
+          color: "#e0e0ff",
+        }}
+      >
+        <Box sx={{ flex: 1, marginRight: "420px" }}>
+          <Typography variant="h5" textAlign="center" sx={{ mb: 3 }}>
+            All Posts
+          </Typography>
+
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+            {posts.map((post) => (
+              <Box
+                key={post._id}
+                sx={{
+                  border: "1px solid #3a3a5a",
+                  borderRadius: "12px",
+                  background: "rgba(20,20,40,0.6)",
+                  transition: "0.3s",
+                  "&:hover": {
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 10px 20px rgba(108,92,231,0.3)",
+                    borderColor: "#6c5ce7",
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    padding: "25px",
+                  }}
+                >
+                  <Avatar
+                    src={
+                      post.userId?.profilePicture ||
+                      "https://avatar.iran.liara.run/public"
+                    }
+                    sx={{
+                      width: 55,
+                      height: 55,
+                      border: "2px solid #6c5ce7",
+                    }}
+                  />
+
+                  <Box>
+                    {post.userId?.isVerified && (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        <VerifiedIcon
+                          sx={{ fontSize: "16px", color: "#1DA1F2" }}
+                        />
+                        <Typography
+                          sx={{
+                            fontSize: "0.75rem",
+                            color: "#1DA1F2",
+                            fontWeight: 500,
+                          }}
+                        >
+                          Verified
+                        </Typography>
+                      </Box>
+                    )}
+
+                    <Typography
+                      sx={{
+                        fontSize: "1.25rem",
+                        fontWeight: 600,
+                        letterSpacing: "0.2px",
+                      }}
+                    >
+                      @{post.userId?.username || "Anonymous"}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Divider
+                  sx={{
+                    mx: "25px",
+                    height: "1.5px",
+                    border: "none",
+                    background:
+                      "linear-gradient(to right, transparent, #6c5ce7, transparent)",
+                    opacity: 0.8,
+                  }}
+                />
+
+                <Box sx={{ padding: "25px" }}>
+                  <Box
+                    sx={{
+                      fontSize: "1.05rem",
+                      lineHeight: 1.8,
+                      fontWeight: 400,
+                      fontFamily:
+                        '"Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+
+                      "& h1, & h2, & h3": {
+                        marginTop: "20px",
+                        marginBottom: "10px",
+                        fontWeight: 600,
+                        color: "#c7c3ff",
+                      },
+                      "& p": {
+                        marginBottom: "12px",
+                      },
+                      "& li": {
+                        marginLeft: "22px",
+                        marginBottom: "6px",
+                      },
+                      "& code": {
+                        background: "rgba(0,0,0,0.45)",
+                        padding: "4px 6px",
+                        borderRadius: "6px",
+                        fontSize: "0.95rem",
+                        fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                      },
+                      "& pre": {
+                        background: "rgba(0,0,0,0.6)",
+                        padding: "14px",
+                        borderRadius: "10px",
+                        overflowX: "auto",
+                        fontSize: "0.95rem",
+                      },
+                      "& a": {
+                        color: "#8c7bff",
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {post.caption}
+                    </ReactMarkdown>
+                  </Box>
+
+                  {post.image && (
+                    <Box
+                      component="img"
+                      src={post.image}
+                      alt="post"
+                      sx={{
+                        width: "100%",
+                        maxHeight: "500px",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                        border: "1px solid #3a3a5a",
+                        mt: 2,
+                      }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            position: "fixed",
+            top: "100px",
+            right: "25px",
+            width: "350px",
+            background: "rgba(20,20,40,0.6)",
+            padding: "25px",
+            borderRadius: "12px",
+            border: "1px solid #3a3a5a",
+          }}
+        >
+          <Typography variant="h6" textAlign="center" sx={{ mb: 2 }}>
+            Create a Post
+          </Typography>
+
+          <form onSubmit={handlePostSubmit}>
+            <TextField
+              multiline
+              minRows={6}
+              placeholder="Write in Markdown Fromat..."
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
+              sx={{
+                mb: 2,
+                "& textarea": {
+                  color: "#e0e0ff",
+                  fontSize: "0.95rem",
+                },
+                "& fieldset": { borderColor: "#3a3a5a" },
+                background: "rgba(30,30,50,0.8)",
+                borderRadius: "8px",
+                width: "100%",
+              }}
             />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? 'Posting...' : 'Post'}
-            </button>
-          </form>
-        </div>
 
-        <div className="posts-feed">
-          <h2>All Posts</h2>
-          {posts.map(post => (
-            <div key={post._id} className="post-card">
-              <div className="post-header">
-                <img
-                  src={post.userId?.profilePicture || "https://avatar.iran.liara.run/public"}
-                  alt="profile"
-                  className="post-profile-pic"
-                  onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
+            <Box sx={{ display: "flex", gap: "12px" }}>
+              <Button
+                component="label"
+                startIcon={<AddPhotoAlternateIcon />}
+                variant="outlined"
+                sx={{ color: "#e0e0ff", borderColor: "#6c5ce7", flex: 1 }}
+              >
+                Upload Image
+                <input
+                  hidden
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    setImage(e.target.files[0]);
+                    setImageUploaded(true);
+                    showToast("Image uploaded", "info");
+                  }}
                 />
-                <p className="post-username">@{post.userId?.username || 'Anonymous'}</p>
-              </div>
-              <div className="post-content">
-                <p className="post-caption">{post.caption}</p>
-                {post.image && (
-                  <img
-                    src={post.image}
-                    alt="post"
-                    className="post-image"
-                  />
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                sx={{
+                  flex: 1,
+                  background: "linear-gradient(135deg, #6c5ce7, #4a3fcf)",
+                  color: "white",
+                }}
+              >
+                {loading ? <CircularProgress size={20} /> : "Post"}
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Box>
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={3000}
+        onClose={() => setToast({ ...toast, open: false })}
+      >
+        <Alert
+          severity={toast.severity}
+          onClose={() => setToast({ ...toast, open: false })}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

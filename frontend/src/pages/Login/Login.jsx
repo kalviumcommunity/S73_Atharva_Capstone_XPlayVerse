@@ -1,7 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
+
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  CircularProgress,
+  Divider,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+
+import GoogleIcon from "@mui/icons-material/Google";
+import LoginIcon from "@mui/icons-material/Login";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -13,9 +26,18 @@ const Login = () => {
   const [rateLimited, setRateLimited] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+
+  const showToast = (message, severity = "error") => {
+    setToast({ open: true, message, severity });
   };
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -39,7 +61,6 @@ const Login = () => {
       );
 
       localStorage.setItem("userId", res.data.userId);
-      alert("Login successful!");
       navigate("/feeds");
     } catch (err) {
       const status = err?.response?.status;
@@ -47,9 +68,15 @@ const Login = () => {
       if (status === 429) {
         setRateLimited(true);
         setCooldown(300);
-        alert("Too many login attempts. Please wait 5 minutes.");
+        showToast(
+          "Too many login attempts. Please wait 5 minutes.",
+          "warning"
+        );
       } else {
-        alert(err?.response?.data?.message || "Login failed");
+        showToast(
+          err?.response?.data?.message || "Login failed",
+          "error"
+        );
       }
     } finally {
       setLoading(false);
@@ -57,62 +84,158 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+    <>
+      <Box sx={{ minHeight: "100vh", display: "flex" }}>
+        <Box
+          sx={{
+            width: "420px",
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(15,15,30,0.95)",
+            color: "#ffffff",
+            px: 4,
+          }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                background:
+                  "linear-gradient(135deg, #6c5ce7, #a29bfe)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Welcome Back
+            </Typography>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="email@example.com"
-          onChange={handleChange}
-          required
-        />
+            <Typography sx={{ color: "#cfcfff", mb: 4 }}>
+              Login to continue to XPlayVerse
+            </Typography>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
+            <Box component="form" onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                sx={{
+                  mb: 2,
+                  "& input": { color: "#ffffff" },
+                  "& label": { color: "#cfcfff" },
+                  "& fieldset": { borderColor: "#3a3a5a" },
+                }}
+              />
 
-        <button type="submit" disabled={loading || rateLimited}>
-          {loading
-            ? "Logging in..."
-            : rateLimited
-            ? `Try again in ${cooldown}s`
-            : "Login"}
-        </button>
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                sx={{
+                  mb: 3,
+                  "& input": { color: "#ffffff" },
+                  "& label": { color: "#cfcfff" },
+                  "& fieldset": { borderColor: "#3a3a5a" },
+                }}
+              />
 
-        {rateLimited && (
-          <p className="rate-limit-warning">
-            Too many login attempts. Please wait before trying again.
-          </p>
-        )}
+              <Button
+                fullWidth
+                type="submit"
+                startIcon={<LoginIcon />}
+                disabled={loading || rateLimited}
+                sx={{
+                  py: 1.2,
+                  mb: 2,
+                  background:
+                    "linear-gradient(135deg, #6c5ce7, #4a3fcf)",
+                  color: "white",
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={22} color="inherit" />
+                ) : rateLimited ? (
+                  `Try again in ${cooldown}s`
+                ) : (
+                  "Login"
+                )}
+              </Button>
 
-        <div className="google-btn-container">
-          <button
-            type="button"
-            className="google-login-btn"
-            onClick={() =>
-              (window.location.href = `${BACKEND_URL}/api/auth/google`)
-            }
-          >
-            <img
-              src="g-logo.png"
-              alt="Google Logo"
-              className="google-login-icon"
-            />
-            <span className="google-login-text">Sign in with Google</span>
-          </button>
-        </div>
+              <Divider sx={{ my: 2, background: "#3a3a5a" }} />
 
-        <p>
-          Don&apos;t have an account? <Link to="/signup">Signup</Link>
-        </p>
-      </form>
-    </div>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<GoogleIcon />}
+                onClick={() =>
+                  (window.location.href = `${BACKEND_URL}/api/auth/google`)
+                }
+                sx={{
+                  color: "#ffffff",
+                  borderColor: "#6c5ce7",
+                  py: 1.1,
+                }}
+              >
+                Sign in with Google
+              </Button>
+
+              <Typography sx={{ mt: 3, fontSize: "0.9rem" }}>
+                Don&apos;t have an account?{" "}
+                <Link to="/signup" style={{ color: "#a29bfe" }}>
+                  Signup
+                </Link>
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            flex: 1,
+            display: { xs: "none", md: "flex" },
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#000",
+          }}
+        >
+          <Box
+            component="img"
+            src="https://images.unsplash.com/photo-1542751371-adc38448a05e"
+            alt="Gaming"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        </Box>
+      </Box>
+
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={3500}
+        onClose={() => setToast({ ...toast, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          severity={toast.severity}
+          sx={{ width: "100%" }}
+          onClose={() => setToast({ ...toast, open: false })}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

@@ -1,196 +1,312 @@
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
-import Navbar from '../Navbar/Navbar';
-import axios from 'axios';
-import './Squad.css'
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
+import Navbar from "../Navbar/Navbar";
+import axios from "axios";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Avatar,
+  Divider,
+  Chip,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import SendIcon from "@mui/icons-material/Send";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const socket = io(`${BACKEND_URL}`);
 
 const SquadRoom = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState('');
+  const [room, setRoom] = useState("");
   const [user, setUser] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [newRoomName, setNewRoomName] = useState('');
-  const [smartReplies, setSmartReplies] = useState([]); 
+  const [newRoomName, setNewRoomName] = useState("");
+  const [smartReplies, setSmartReplies] = useState([]);
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (userId) {
-      axios.get(`${BACKEND_URL}/api/users/${userId}`, {withCredentials:true})
-        .then(res => setUser(res.data))
-        .catch(err => console.error(err));
+      axios
+        .get(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true })
+        .then((res) => setUser(res.data));
     }
   }, [userId]);
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/rooms`, {withCredentials:true})
-      .then(res => {
+    axios
+      .get(`${BACKEND_URL}/api/rooms`, { withCredentials: true })
+      .then((res) => {
         setRooms(res.data);
         if (res.data.length > 0 && !room) {
           setRoom(res.data[0].name);
         }
-      })
-      .catch(err => console.error(err));
+      });
   }, []);
 
   const fetchSmartReplies = async (text) => {
-    try {
-      const res = await axios.post(
-        `${BACKEND_URL}/api/ai/smart-reply`,
-        { message: text },
-        { withCredentials: true }
-      );
-
-      setSmartReplies(res.data);
-    } catch (err) {
-      console.error("Smart Reply Error:", err);
-    }
+    const res = await axios.post(
+      `${BACKEND_URL}/api/ai/smart-reply`,
+      { message: text },
+      { withCredentials: true }
+    );
+    setSmartReplies(res.data);
   };
 
   useEffect(() => {
     if (!user || !room) return;
 
-    socket.emit('join_room', room);
+    socket.emit("join_room", room);
 
-    const handleReceiveMessage = (data) => {
+    socket.on("receive_message", (data) => {
       if (data.room === room) {
-        setMessages(prev => [...prev, data]);
-
+        setMessages((prev) => [...prev, data]);
         fetchSmartReplies(data.content);
       }
-    };
+    });
 
-    const handlePreviousMessages = (msgs) => {
+    socket.on("previous_messages", (msgs) => {
       setMessages(msgs);
-
-      if (msgs.length > 0) {
-        fetchSmartReplies(msgs[msgs.length - 1].content);
-      }
-    };
-
-    socket.on('receive_message', handleReceiveMessage);
-    socket.on('previous_messages', handlePreviousMessages);
+      if (msgs.length) fetchSmartReplies(msgs[msgs.length - 1].content);
+    });
 
     return () => {
-      socket.off('receive_message', handleReceiveMessage);
-      socket.off('previous_messages', handlePreviousMessages);
+      socket.off("receive_message");
+      socket.off("previous_messages");
     };
   }, [user, room]);
 
   const sendMessage = () => {
-    if (!message.trim() || !user || !room) return;
+    if (!message.trim()) return;
 
-    const newMsg = {
+    socket.emit("send_message", {
       room,
       content: message,
       author: user.username,
-      userId: user?._id,
+      userId: user._id,
       time: new Date().toLocaleTimeString(),
-    };
+    });
 
-    socket.emit('send_message', newMsg);
-    setMessage('');
+    setMessage("");
     setSmartReplies([]);
   };
 
   const handleAddRoom = async () => {
     if (!newRoomName.trim()) return;
 
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/rooms`, { name: newRoomName.trim() }, {withCredentials:true});
-      setRooms(prev => [...prev, res.data]);
-      setRoom(res.data.name);
-      setMessages([]);
-      setNewRoomName('');
-      setSmartReplies([]);
-    } catch (err) {
-      alert(err.response?.data?.message || 'Error creating room');
-    }
+    const res = await axios.post(
+      `${BACKEND_URL}/api/rooms`,
+      { name: newRoomName.trim() },
+      { withCredentials: true }
+    );
+
+    setRooms((prev) => [...prev, res.data]);
+    setRoom(res.data.name);
+    setMessages([]);
+    setNewRoomName("");
+    setSmartReplies([]);
   };
 
   return (
     <>
       <Navbar />
-      <div className="squadroom-container">
-        <div className="sidebar">
-          <h3 className="sidebar-heading">Chat Rooms</h3>
-          <input
-            className="room-input"
-            type="text"
+
+      <Box
+        className="container-fluid"
+        sx={{
+          display: "flex",
+          height: "calc(100vh - 64px)",
+          marginTop: "64px",
+          color: "#e0e0ff",
+        }}
+      >
+        <Box
+          sx={{
+            width: "280px",
+            background: "rgba(20,20,40,0.95)",
+            borderRight: "1px solid #3a3a5a",
+            p: 2,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Chat Rooms
+          </Typography>
+
+          <TextField
+            size="small"
             placeholder="New room name"
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
+            fullWidth
+            sx={{
+              mb: 1,
+              "& input": { color: "#e0e0ff" },
+              "& fieldset": { borderColor: "#3a3a5a" },
+            }}
           />
-          <button className="room-button" onClick={handleAddRoom}>+ Create Room</button>
-          <ul className="room-list">
-            {rooms.map(r => (
-              <li key={r._id}>
-                <button
-                  className={`room-name ${r.name === room ? 'active-room' : ''}`}
-                  onClick={() => {
-                    setRoom(r.name);
-                    setMessages([]);
-                    setSmartReplies([]);
-                  }}
-                >
-                  {r.name}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        <div className="chat-area">
-          <h2 className="room-title">Room: {room || 'None'}</h2>
+          <Button
+            startIcon={<AddIcon />}
+            fullWidth
+            onClick={handleAddRoom}
+            sx={{
+              mb: 2,
+              background: "linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%)",
+              color: "white",
+            }}
+          >
+            Create Room
+          </Button>
 
-          <div className="chat-box">
+          <Divider sx={{ mb: 2 }} />
+
+          {rooms.map((r) => (
+            <Button
+              key={r._id}
+              fullWidth
+              onClick={() => {
+                setRoom(r.name);
+                setMessages([]);
+                setSmartReplies([]);
+              }}
+              sx={{
+                justifyContent: "flex-start",
+                mb: 1,
+                px: 2,
+                py: 1,
+                borderRadius: "10px", // 🔑 rounded
+                color: r.name === room ? "#a29bfe" : "#e0e0ff",
+                background:
+                  r.name === room
+                    ? "linear-gradient(135deg, rgba(108,92,231,0.25), rgba(74,63,207,0.25))"
+                    : "transparent",
+                border:
+                  r.name === room
+                    ? "1px solid rgba(108,92,231,0.6)"
+                    : "1px solid transparent",
+                transition: "0.25s",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, rgba(108,92,231,0.2), rgba(74,63,207,0.2))",
+                  border: "1px solid rgba(108,92,231,0.5)",
+                },
+              }}
+            >
+              {r.name}
+            </Button>
+          ))}
+        </Box>
+
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              p: 2,
+              borderBottom: "1px solid #3a3a5a",
+            }}
+          >
+            Room: {room}
+          </Typography>
+
+          <Box sx={{ flex: 1, p: 3, overflowY: "auto" }}>
             {messages.map((msg, idx) => (
-              <div key={idx} className="chat-message">
-                <div className="chat-author-info">
-                  <img
-                    src={msg.userId?.profilePicture}
-                    alt="profile"
-                    className="avatar"
-                    onError={(e) => { e.target.src = 'https://avatar.iran.liara.run/public' }}
+              <Box key={idx} sx={{ mb: 3 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Avatar
+                    src={
+                      msg.userId?.profilePicture ||
+                      "https://avatar.iran.liara.run/public"
+                    }
+                    sx={{ width: 36, height: 36 }}
                   />
-                  <strong className="author">@{msg.userId?.username || msg.author}</strong>
-                  <span className="timestamp">({msg.time})</span>
-                </div>
-                <div className="chat-text">{msg.content}</div>
-              </div>
+                  <Typography fontWeight={600}>
+                    @{msg.userId?.username || msg.author}
+                  </Typography>
+                  <Typography fontSize="0.75rem" color="gray">
+                    {msg.time}
+                  </Typography>
+                </Box>
+
+                <Typography sx={{ ml: 5, mt: 1 }}>{msg.content}</Typography>
+              </Box>
             ))}
-          </div>
+          </Box>
 
           {smartReplies.length > 0 && (
-            <div className="smart-reply-container">
+            <Box
+              sx={{
+                p: 2,
+                display: "flex",
+                gap: 1.5,
+                flexWrap: "wrap",
+                borderTop: "1px solid #3a3a5a",
+                background: "rgba(20,20,40,0.6)",
+              }}
+            >
               {smartReplies.map((reply, idx) => (
-                <button
+                <Chip
                   key={idx}
-                  className="smart-reply-btn"
+                  label={reply}
                   onClick={() => setMessage(reply)}
-                >
-                  {reply}
-                </button>
+                  sx={{
+                    px: 1.5,
+                    py: 0.8,
+                    fontSize: "0.9rem",
+                    borderRadius: "20px",
+                    background:
+                      "linear-gradient(135deg, rgba(108,92,231,0.25), rgba(74,63,207,0.25))",
+                    color: "#e0e0ff",
+                    border: "1px solid rgba(108,92,231,0.6)",
+                    boxShadow: "0 0 8px rgba(108,92,231,0.4)",
+                    cursor: "pointer",
+                    transition: "0.25s",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, rgba(108,92,231,0.4), rgba(74,63,207,0.4))",
+                      boxShadow: "0 0 12px rgba(108,92,231,0.7)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                />
               ))}
-            </div>
+            </Box>
           )}
 
-          <div className="message-input-group">
-            <input
-              type="text"
+          <Box
+            sx={{
+              p: 2,
+              borderTop: "1px solid #3a3a5a",
+              display: "flex",
+              gap: 2,
+            }}
+          >
+            <TextField
+              fullWidth
+              placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="message-input"
-              placeholder="Type your message..."
+              sx={{
+                "& input": { color: "#e0e0ff" },
+                "& fieldset": { borderColor: "#3a3a5a" },
+              }}
             />
-            <button onClick={sendMessage} className="send-button">Send</button>
-          </div>
-        </div>
-      </div>
+
+            <Button
+              onClick={sendMessage}
+              sx={{
+                background: "linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%)",
+                color: "white",
+                px: 3,
+              }}
+            >
+              <SendIcon />
+            </Button>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };
