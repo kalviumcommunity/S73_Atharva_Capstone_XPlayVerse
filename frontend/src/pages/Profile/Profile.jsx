@@ -43,7 +43,6 @@ const Profile = () => {
   });
 
   const navigate = useNavigate();
-  const storedUserId = localStorage.getItem("userId");
 
   const showToast = (message, severity = "success") => {
     setToast({ open: true, message, severity });
@@ -66,7 +65,6 @@ const Profile = () => {
         if (!mounted) return;
 
         setUser(currentUser);
-        localStorage.setItem("userId", currentUser._id);
 
         setForm({
           name: currentUser.name || "",
@@ -80,8 +78,7 @@ const Profile = () => {
         );
         setUserPosts(postsRes.data || []);
       } catch {
-        if (storedUserId) navigate("/profile");
-        else navigate("/login");
+        navigate("/login");
       } finally {
         mounted && setLoading(false);
       }
@@ -111,7 +108,6 @@ const Profile = () => {
       await axios.delete(`${BACKEND_URL}/api/users/${user._id}`, {
         withCredentials: true,
       });
-      localStorage.removeItem("userId");
       showToast("Profile deleted successfully", "success");
       setTimeout(() => navigate("/signup"), 1200);
     } catch {

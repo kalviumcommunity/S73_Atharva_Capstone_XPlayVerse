@@ -41,10 +41,13 @@ const Login = () => {
 
   useEffect(() => {
     if (cooldown > 0) {
+      setRateLimited(true);
       const timer = setInterval(() => {
         setCooldown((prev) => prev - 1);
       }, 1000);
       return () => clearInterval(timer);
+    } else {
+      setRateLimited(false);
     }
   }, [cooldown]);
 
@@ -59,17 +62,18 @@ const Login = () => {
         form,
         { withCredentials: true }
       );
-
-      localStorage.setItem("userId", res.data.userId);
+      setRateLimited(false);
+      setCooldown(0);
       navigate("/feeds");
     } catch (err) {
       const status = err?.response?.status;
 
       if (status === 429) {
+        const retryAfter = parseInt(err?.response?.headers?.['retry-after']) || 300;
+        setCooldown(retryAfter);
         setRateLimited(true);
-        setCooldown(300);
         showToast(
-          "Too many login attempts. Please wait 5 minutes.",
+          `Too many login attempts. Please wait ${retryAfter} seconds.`,
           "warning"
         );
       } else {

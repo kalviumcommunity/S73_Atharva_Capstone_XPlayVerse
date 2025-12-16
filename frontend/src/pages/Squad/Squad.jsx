@@ -26,15 +26,17 @@ const SquadRoom = () => {
   const [newRoomName, setNewRoomName] = useState("");
   const [smartReplies, setSmartReplies] = useState([]);
 
-  const userId = localStorage.getItem("userId");
-
   useEffect(() => {
-    if (userId) {
-      axios
-        .get(`${BACKEND_URL}/api/users/${userId}`, { withCredentials: true })
-        .then((res) => setUser(res.data));
-    }
-  }, [userId]);
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
+        setUser(res.data.user);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     axios
@@ -81,6 +83,7 @@ const SquadRoom = () => {
 
   const sendMessage = () => {
     if (!message.trim()) return;
+    if (!user) return;
 
     socket.emit("send_message", {
       room,
@@ -177,7 +180,7 @@ const SquadRoom = () => {
                 mb: 1,
                 px: 2,
                 py: 1,
-                borderRadius: "10px", // 🔑 rounded
+                borderRadius: "10px", 
                 color: r.name === room ? "#a29bfe" : "#e0e0ff",
                 background:
                   r.name === room
