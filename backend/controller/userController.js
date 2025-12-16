@@ -94,13 +94,14 @@ export const LOGIN = async (req, res) => {
 };
 
 export const LOGOUT = (req, res) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production"
-    });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+    path: '/'
+  });
 
-    return res.json({ message: "Logged out successfully!" });
+  return res.json({ message: "Logged out successfully!" });
 };
 
 export const GET = async (req, res) => {
