@@ -29,13 +29,25 @@ const Feeds = () => {
   const [loading, setLoading] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
 
+  const [user, setUser] = useState(null);
+
   const [toast, setToast] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
-  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
+        setUser(res.data.user);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
 
   const showToast = (message, severity = "success") => {
     setToast({ open: true, message, severity });
@@ -65,8 +77,13 @@ const Feeds = () => {
 
     setLoading(true);
 
+    if (!user) {
+      showToast('Please login to post', 'error');
+      setLoading(false);
+      return;
+    }
     const formData = new FormData();
-    formData.append("userId", userId);
+    formData.append("userId", user?._id);
     formData.append("caption", caption);
     if (image) formData.append("image", image);
 

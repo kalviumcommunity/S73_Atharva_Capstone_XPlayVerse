@@ -60,13 +60,11 @@ const Login = () => {
         { withCredentials: true }
       );
 
-      localStorage.setItem("userId", res.data.userId);
       navigate("/feeds");
     } catch (err) {
       const status = err?.response?.status;
 
       if (status === 429) {
-        setRateLimited(true);
         setCooldown(300);
         showToast(
           "Too many login attempts. Please wait 5 minutes.",
