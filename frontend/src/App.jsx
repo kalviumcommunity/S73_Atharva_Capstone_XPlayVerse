@@ -9,6 +9,7 @@ import SquadRoom from './pages/Squad/Squad';
 import AuthSuccess from './pages/Login/AuthSuccess';
 import GameSuggestor from './pages/GameSuggestor/GameSuggestor';
 import VerifyPayment from './pages/VerifyPayment/VerifyPayment';
+import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/auth/success" element={<AuthSuccess />} />
         <Route path="/suggest" element={<GameSuggestor />} />
         <Route path="/verify" element={<VerifyPayment />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

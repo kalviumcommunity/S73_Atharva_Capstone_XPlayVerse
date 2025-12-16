@@ -1,4 +1,11 @@
-:root {
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  background: #05050f;
+  height: 100%;
+}
+
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -66,4 +73,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-
+ */
