@@ -18,14 +18,11 @@ const Navbar = () => {
   const [toast, setToast] = useState(false);
 
   const handleLogout = () => {
-    axios.post(`${BACKEND_URL}/api/users/logout`, {}, { withCredentials: true })
-      .catch(() => {})
-      .finally(() => {
-        setToast(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      });
+        axios.post(`${BACKEND_URL}/api/users/logout`, {}, { withCredentials: true })
+          .catch(() => {})
+          .finally(() => {
+            window.location.replace('/login');
+          });
   };
 
   return (
