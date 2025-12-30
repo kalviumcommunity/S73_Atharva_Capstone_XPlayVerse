@@ -10,6 +10,7 @@ import AuthSuccess from './pages/Login/AuthSuccess';
 import GameSuggestor from './pages/GameSuggestor/GameSuggestor';
 import VerifyPayment from './pages/VerifyPayment/VerifyPayment';
 import NotFound from "./pages/NotFound/NotFound";
+import Chat from './pages/Chat/Chat';
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
         <Route path="/auth/success" element={<AuthSuccess />} />
         <Route path="/suggest" element={<GameSuggestor />} />
         <Route path="/verify" element={<VerifyPayment />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:userId" element={<Chat />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
