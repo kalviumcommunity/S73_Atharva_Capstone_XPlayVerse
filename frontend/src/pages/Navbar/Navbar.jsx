@@ -71,6 +71,7 @@ const Navbar = () => {
             {[
               { label: "Feeds", to: "/feeds" },
               { label: "Squad", to: "/squad" },
+              { label: "Chat", to: "/chat" },
               { label: "Leaderboard", to: "/leaderboard" },
               { label: "Suggest", to: "/suggest" },
               { label: "Profile", to: "/profile" },

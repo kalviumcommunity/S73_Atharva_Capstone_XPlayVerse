@@ -1,4 +1,4 @@
-# XPlayVerse – A Full‑Stack Gaming Social Platform
+# XPlayVerse 🎮 – A Full‑Stack Gaming Social Platform
 
 > **XPlayVerse** is a modern **full‑stack MERN gaming platform** that allows gamers to discover trending games, connect with other players, chat in real time, and get AI‑powered game recommendations.
 
@@ -19,7 +19,7 @@ Built with **React, Node.js, Express, MongoDB**, and real‑world integrations l
 
 ---
 
-## Project Overview
+## 🚀 Project Overview
 
 **XPlayVerse** solves a common problem faced by gamers — using multiple platforms to track games, interact with communities, and manage gaming identity.
 
@@ -27,7 +27,7 @@ With XPlayVerse, users can:
 - Explore **trending games** using real‑time API data
 - Share posts and images in **community feeds**
 - Chat with friends using **real‑time Socket.io chat**
-- Get **AI‑based game recommendations** and **Smart Reply Based recommendations**
+- Get **AI‑based game recommendations**
 - Unlock **verified profiles** using secure online payments
 
 This project demonstrates **real‑world full‑stack development**, **API integration**, **authentication**, **payments**, and **AI features**.
@@ -67,9 +67,8 @@ This project demonstrates **real‑world full‑stack development**, **API integ
 ### Backend
 - Node.js
 - Express.js
-
-### Database
-- MongoDB
+- Docker (Containerized Backend and Frontend for Consistent Deployment)
+- Docker Compose (Multi-container orchestration)
 
 ### APIs & Services
 - RAWG API (Game Data)
@@ -77,6 +76,16 @@ This project demonstrates **real‑world full‑stack development**, **API integ
 - Gemini API (AI Features)
 - PayPal SDK (Payments)
 - Nodemailer (Email & OTP)
+
+---
+
+## 🐳 Containerization & DevOps
+
+- **Docker Integration** – Backend services are containerized using Docker for consistent development, testing, and deployment across environments.
+- **Docker Compose** – Used to manage and run multi-container setup (Backend services, database, and dependencies) with a single command.
+- **Dockerfile Configuration** – Ensures reproducible builds and simplified setup for contributors and recruiters.
+- **One-Command Startup** – Simplifies local development using `docker-compose up`.
+- **Production-Ready Setup** – Makes the application cloud-ready, scalable, and DevOps-friendly.
 
 ---
 

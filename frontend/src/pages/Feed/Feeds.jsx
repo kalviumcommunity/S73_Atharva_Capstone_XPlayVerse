@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -28,6 +31,8 @@ const Feeds = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
+  const [commentInputs, setCommentInputs] = useState({});
+  const [openComments, setOpenComments] = useState({});
 
   const [user, setUser] = useState(null);
 
@@ -40,9 +45,11 @@ const Feeds = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = await axios.get(`${BACKEND_URL}/api/me`, { withCredentials: true });
+        const res = await axios.get(`${BACKEND_URL}/api/me`, {
+          withCredentials: true,
+        });
         setUser(res.data.user);
-      } catch (err) {
+      } catch {
         setUser(null);
       }
     };
@@ -67,6 +74,59 @@ const Feeds = () => {
     );
   };
 
+  const handleLikeToggle = async (postId) => {
+    if (!user) {
+      showToast("Please login to like posts", "error");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        `${BACKEND_URL}/api/posts/${postId}/like`,
+        {},
+        { withCredentials: true }
+      );
+      setPosts((prev) =>
+        prev.map((post) => (post._id === postId ? res.data : post))
+      );
+    } catch {
+      showToast("Failed to update like", "error");
+    }
+  };
+
+  const handleAddComment = async (postId) => {
+    if (!user) {
+      showToast("Please login to comment", "error");
+      return;
+    }
+
+    const text = commentInputs[postId];
+    if (!text?.trim()) return;
+
+    try {
+      const res = await axios.post(
+        `${BACKEND_URL}/api/posts/${postId}/comment`,
+        { text },
+        { withCredentials: true }
+      );
+
+      setPosts((prev) =>
+        prev.map((post) => (post._id === postId ? res.data : post))
+      );
+
+      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+    } catch {
+      showToast("Failed to add comment", "error");
+    }
+  };
+
+  const toggleComments = (postId) => {
+    setOpenComments((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
   const handlePostSubmit = async (e) => {
     e.preventDefault();
 
@@ -78,12 +138,13 @@ const Feeds = () => {
     setLoading(true);
 
     if (!user) {
-      showToast('Please login to post', 'error');
+      showToast("Please login to post", "error");
       setLoading(false);
       return;
     }
+
     const formData = new FormData();
-    formData.append("userId", user?._id);
+    formData.append("userId", user._id);
     formData.append("caption", caption);
     if (image) formData.append("image", image);
 
@@ -127,153 +188,248 @@ const Feeds = () => {
           </Typography>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-            {posts.map((post) => (
-              <Box
-                key={post._id}
-                sx={{
-                  border: "1px solid #3a3a5a",
-                  borderRadius: "12px",
-                  background: "rgba(20,20,40,0.6)",
-                  transition: "0.3s",
-                  "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: "0 10px 20px rgba(108,92,231,0.3)",
-                    borderColor: "#6c5ce7",
-                  },
-                }}
-              >
+            {posts.map((post) => {
+              const isLiked = post.likes?.includes(user?._id);
+
+              return (
                 <Box
+                  key={post._id}
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "15px",
-                    padding: "25px",
+                    border: "1px solid #3a3a5a",
+                    borderRadius: "12px",
+                    background: "rgba(20,20,40,0.6)",
+                    transition: "0.3s",
+                    "&:hover": {
+                      transform: "translateY(-5px)",
+                      boxShadow: "0 10px 20px rgba(108,92,231,0.3)",
+                      borderColor: "#6c5ce7",
+                    },
                   }}
                 >
-                  <Avatar
-                    src={
-                      post.userId?.profilePicture ||
-                      "https://avatar.iran.liara.run/public"
-                    }
+                  <Box
                     sx={{
-                      width: 55,
-                      height: 55,
-                      border: "2px solid #6c5ce7",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "15px",
+                      padding: "25px",
+                    }}
+                  >
+                    <Avatar
+                      src={
+                        post.userId?.profilePicture ||
+                        "https://avatar.iran.liara.run/public"
+                      }
+                      sx={{
+                        width: 55,
+                        height: 55,
+                        border: "2px solid #6c5ce7",
+                      }}
+                    />
+
+                    <Box>
+                      {post.userId?.isVerified && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          <VerifiedIcon
+                            sx={{
+                              fontSize: "16px",
+                              color: "#1DA1F2",
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              fontSize: "0.75rem",
+                              color: "#1DA1F2",
+                              fontWeight: 500,
+                            }}
+                          >
+                            Verified
+                          </Typography>
+                        </Box>
+                      )}
+
+                      <Typography
+                        sx={{
+                          fontSize: "1.25rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        @{post.userId?.username || "Anonymous"}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Divider
+                    sx={{
+                      mx: "25px",
+                      height: "1.5px",
+                      background:
+                        "linear-gradient(to right, transparent, #6c5ce7, transparent)",
                     }}
                   />
 
-                  <Box>
-                    {post.userId?.isVerified && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <VerifiedIcon
-                          sx={{ fontSize: "16px", color: "#1DA1F2" }}
-                        />
-                        <Typography
-                          sx={{
-                            fontSize: "0.75rem",
-                            color: "#1DA1F2",
-                            fontWeight: 500,
-                          }}
-                        >
-                          Verified
-                        </Typography>
-                      </Box>
-                    )}
-
-                    <Typography
-                      sx={{
-                        fontSize: "1.25rem",
-                        fontWeight: 600,
-                        letterSpacing: "0.2px",
-                      }}
-                    >
-                      @{post.userId?.username || "Anonymous"}
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <Divider
-                  sx={{
-                    mx: "25px",
-                    height: "1.5px",
-                    border: "none",
-                    background:
-                      "linear-gradient(to right, transparent, #6c5ce7, transparent)",
-                    opacity: 0.8,
-                  }}
-                />
-
-                <Box sx={{ padding: "25px" }}>
-                  <Box
-                    sx={{
-                      fontSize: "1.05rem",
-                      lineHeight: 1.8,
-                      fontWeight: 400,
-                      fontFamily:
-                        '"Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
-
-                      "& h1, & h2, & h3": {
-                        marginTop: "20px",
-                        marginBottom: "10px",
-                        fontWeight: 600,
-                        color: "#c7c3ff",
-                      },
-                      "& p": {
-                        marginBottom: "12px",
-                      },
-                      "& li": {
-                        marginLeft: "22px",
-                        marginBottom: "6px",
-                      },
-                      "& code": {
-                        background: "rgba(0,0,0,0.45)",
-                        padding: "4px 6px",
-                        borderRadius: "6px",
-                        fontSize: "0.95rem",
-                        fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-                      },
-                      "& pre": {
-                        background: "rgba(0,0,0,0.6)",
-                        padding: "14px",
-                        borderRadius: "10px",
-                        overflowX: "auto",
-                        fontSize: "0.95rem",
-                      },
-                      "& a": {
-                        color: "#8c7bff",
-                        textDecoration: "underline",
-                      },
-                    }}
-                  >
+                  <Box sx={{ padding: "25px" }}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {post.caption}
                     </ReactMarkdown>
+
+                    {post.image && (
+                      <Box
+                        component="img"
+                        src={post.image}
+                        alt="post"
+                        sx={{
+                          width: "100%",
+                          maxHeight: "500px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          border: "1px solid #3a3a5a",
+                          mt: 2,
+                        }}
+                      />
+                    )}
                   </Box>
 
-                  {post.image && (
-                    <Box
-                      component="img"
-                      src={post.image}
-                      alt="post"
+                  <Box
+                    sx={{
+                      px: "25px",
+                      pb: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <Button
+                      onClick={() => handleLikeToggle(post._id)}
+                      startIcon={
+                        isLiked ? (
+                          <FavoriteIcon sx={{ color: "#e84393" }} />
+                        ) : (
+                          <FavoriteBorderIcon sx={{ color: "#e84393" }} />
+                        )
+                      }
                       sx={{
-                        width: "100%",
-                        maxHeight: "500px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                        border: "1px solid #3a3a5a",
-                        mt: 2,
+                        color: "#e84393",
+                        textTransform: "none",
+                        minWidth: "unset",
                       }}
-                    />
-                  )}
+                    >
+                      {post.likes?.length || 0}
+                    </Button>
+
+                    <Typography sx={{ fontSize: "0.9rem" }}>
+                      {post.likes?.length === 1 ? "Like" : "Likes"}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ px: "25px", pb: "20px" }}>
+                    <Typography
+                      sx={{
+                        fontSize: "0.9rem",
+                        mb: 1,
+                        cursor: "pointer",
+                        color: "#a29bfe",
+                      }}
+                      onClick={() => toggleComments(post._id)}
+                    >
+                      💬 {post.comments?.length || 0} Comments
+                    </Typography>
+
+                    {openComments[post._id] && (
+                      <>
+                        {post.comments?.map((comment, idx) => (
+                          <Box
+                            key={idx}
+                            sx={{ display: "flex", gap: 1, mb: 1 }}
+                          >
+                            <Avatar
+                              src={
+                                comment.userId?.profilePicture ||
+                                "https://avatar.iran.liara.run/public"
+                              }
+                              sx={{ width: 28, height: 28 }}
+                            />
+
+                            <Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px",
+                                }}
+                              >
+                                <Typography
+                                  fontSize="0.85rem"
+                                  fontWeight={600}
+                                  color="white"
+                                >
+                                  @{comment.userId?.username || "Unknown"}
+                                </Typography>
+
+                                {comment.userId?.isVerified && (
+                                  <VerifiedIcon
+                                    sx={{ fontSize: 14, color: "#1DA1F2" }}
+                                  />
+                                )}
+                              </Box>
+
+                              <Typography fontSize="0.9rem" color="white">
+                                {comment.text}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        ))}
+
+                        {/* ADD COMMENT */}
+                        <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            placeholder="Add a comment..."
+                            value={commentInputs[post._id] || ""}
+                            onChange={(e) =>
+                              setCommentInputs({
+                                ...commentInputs,
+                                [post._id]: e.target.value,
+                              })
+                            }
+                            InputProps={{
+                              sx: {
+                                color: "white",
+                              },
+                            }}
+                            sx={{
+                              "& fieldset": {
+                                borderColor: "#3a3a5a",
+                              },
+                              "& input::placeholder": {
+                                color: "rgba(255,255,255,0.6)",
+                              },
+                            }}
+                          />
+
+                          <Button
+                            onClick={() => handleAddComment(post._id)}
+                            sx={{
+                              background:
+                                "linear-gradient(135deg,#6c5ce7,#4a3fcf)",
+                              color: "white",
+                            }}
+                          >
+                            Post
+                          </Button>
+                        </Box>
+                      </>
+                    )}
+
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              );
+            })}
           </Box>
         </Box>
 
@@ -295,21 +451,16 @@ const Feeds = () => {
 
           <form onSubmit={handlePostSubmit}>
             <TextField
+              fullWidth
               multiline
               minRows={6}
-              placeholder="Write in Markdown Fromat..."
+              placeholder="Write in Markdown Format..."
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               sx={{
                 mb: 2,
-                "& textarea": {
-                  color: "#e0e0ff",
-                  fontSize: "0.95rem",
-                },
+                "& textarea": { color: "#e0e0ff" },
                 "& fieldset": { borderColor: "#3a3a5a" },
-                background: "rgba(30,30,50,0.8)",
-                borderRadius: "8px",
-                width: "100%",
               }}
             />
 
@@ -318,7 +469,11 @@ const Feeds = () => {
                 component="label"
                 startIcon={<AddPhotoAlternateIcon />}
                 variant="outlined"
-                sx={{ color: "#e0e0ff", borderColor: "#6c5ce7", flex: 1 }}
+                sx={{
+                  color: "#e0e0ff",
+                  borderColor: "#6c5ce7",
+                  flex: 1,
+                }}
               >
                 Upload Image
                 <input
